@@ -6,11 +6,11 @@ namespace WeldingJobTrackerWebApp.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Street1 { get; set; } = string.Empty;
+        public string Street1 { get; set; }
         public string? Street2 { get; set; }
-        public string City { get; set; } = string.Empty;
-        public string state { get; set; } = string.Empty;
-        public string PostalCode { get; set; } = string.Empty;
+        public string City { get; set; }
+        public string state { get; set; }
+        public string PostalCode { get; set; }
         public string Country { get; set; } = "United States";
     }
 }
