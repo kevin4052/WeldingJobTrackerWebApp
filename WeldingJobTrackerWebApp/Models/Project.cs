@@ -13,7 +13,7 @@ namespace WeldingJobTrackerWebApp.Models
         public string Client {  get; set; }
         public int Rate {  get; set; }
         public int EstimatedHours {  get; set; }
-        public int totalHours {  get; set; }
+        public int totalHours {  get; set; } 
         public int EstimatedWeldingWire {  get; set; }
         public int TotalWeldingWire {  get; set; }
         [ForeignKey("Welder")] public int WelderId { get; set; }
