@@ -16,7 +16,5 @@ namespace WeldingJobTrackerWebApp.Models
         public int totalHours {  get; set; } 
         public int EstimatedWeldingWire {  get; set; }
         public int TotalWeldingWire {  get; set; }
-        [ForeignKey("Welder")] public int WelderId { get; set; }
-        public ICollection<Welder> Welders { get; set; }
     }
 }
