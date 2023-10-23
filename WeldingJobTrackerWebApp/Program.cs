@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
+using WeldingJobTrackerWebApp.Interfaces;
+using WeldingJobTrackerWebApp.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

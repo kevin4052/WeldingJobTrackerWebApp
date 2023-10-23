@@ -1,26 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
+using WeldingJobTrackerWebApp.Interfaces;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {
     public class ClientController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IClientRepository _clientRepository;
 
-        public ClientController(ApplicationDbContext context) 
+        public ClientController(IClientRepository clientRepository) 
         {
-            _context = context;
+            _clientRepository = clientRepository;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var clients = _context.Clients.Include(a => a.Address).ToList();
+            var clients = await _clientRepository.GetAll();
             return View(clients);
         }
 
-        public IActionResult Detail(int id) 
+        public async Task<IActionResult> Detail(int id) 
         {
-            var client = _context.Clients.Include(a => a.Address).FirstOrDefault(c => c.Id == id);
+            var client = await _clientRepository.GetByIdAsync(id);
             return View(client);
         }
     }
