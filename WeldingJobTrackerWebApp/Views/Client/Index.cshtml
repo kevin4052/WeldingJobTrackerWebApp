@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Client>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="jumbotron">
+    <div class="container">
+        <h3 class="display-3">Clients List</h3>
+        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        @* <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p> *@
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Client ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Street1</th>
+            <th scope="col">Street2</th>
+            <th scope="col">City</th>
+            <th scope="col">State</th>
+            <th scope="col">Zip</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <th scope="row">@item.Id</th>
+                <td>@item.Name</td>
+                <td>@item?.Address?.Street1</td>
+                <td>@item?.Address?.Street2</td>
+                <td>@item?.Address?.City</td>
+                <td>@item?.Address?.State</td>
+                <td>@item?.Address?.PostalCode</td>
+                <td>
+                    <a asp-controller="Client" asp-action="Detail" asp-route-id="@item?.Id" type="button" class="btn btn-primary">View</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

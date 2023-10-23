@@ -14,5 +14,6 @@ namespace WeldingJobTrackerWebApp.Data
         public DbSet<Client> Clients { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectStatus> ProjectStatuses { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
