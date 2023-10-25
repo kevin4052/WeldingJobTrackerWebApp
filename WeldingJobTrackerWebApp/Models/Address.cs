@@ -5,8 +5,7 @@ namespace WeldingJobTrackerWebApp.Models
 {
     public class Address
     {
-        [Key]
-        public int Id { get; set; }
+        [Key] public int Id { get; set; }
         public string Street1 { get; set; }
         public string? Street2 { get; set; }
         public string City { get; set; }

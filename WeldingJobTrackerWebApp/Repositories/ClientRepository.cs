@@ -14,7 +14,6 @@ namespace WeldingJobTrackerWebApp.Repositories
             _context = context;
         }
 
-
         public bool Add(Client client)
         {
             _context.Add(client);

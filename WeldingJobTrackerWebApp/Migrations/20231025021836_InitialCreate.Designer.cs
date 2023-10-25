@@ -11,7 +11,7 @@ using WeldingJobTrackerWebApp.Data;
 namespace WeldingJobTrackerWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231022231452_InitialCreate")]
+    [Migration("20231025021836_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -89,9 +89,8 @@ namespace WeldingJobTrackerWebApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Client")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<int>("EstimatedHours")
                         .HasColumnType("int");
@@ -103,9 +102,8 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProjectStatusId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ProjectStatusId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Rate")
                         .HasColumnType("int");
@@ -118,6 +116,8 @@ namespace WeldingJobTrackerWebApp.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClientId");
+
                     b.HasIndex("ProjectStatusId");
 
                     b.ToTable("Projects");
@@ -125,8 +125,11 @@ namespace WeldingJobTrackerWebApp.Migrations
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.ProjectStatus", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -139,6 +142,51 @@ namespace WeldingJobTrackerWebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectStatuses");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Client", b =>
@@ -154,13 +202,32 @@ namespace WeldingJobTrackerWebApp.Migrations
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Project", b =>
                 {
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WeldingJobTrackerWebApp.Models.ProjectStatus", "ProjectStatus")
                         .WithMany()
                         .HasForeignKey("ProjectStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Client");
+
                     b.Navigation("ProjectStatus");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.User", b =>
+                {
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
                 });
 #pragma warning restore 612, 618
         }
