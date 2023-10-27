@@ -19,7 +19,7 @@ namespace WeldingJobTrackerWebApp.Data
                     {
                         new Client()
                         {
-                            Name = "Client1",
+                            Name = "Test Client1",
                             Address = new Address()
                             {
                                 Street1 = "321 FM Rd 2222 ",
@@ -31,7 +31,7 @@ namespace WeldingJobTrackerWebApp.Data
                         },
                         new Client()
                         {
-                            Name = "Client2",
+                            Name = "Test Client2",
                             Address = new Address()
                             {
                                 Street1 = "321 Pike Place",
@@ -78,6 +78,31 @@ namespace WeldingJobTrackerWebApp.Data
                             Code = "Completed",
                             Name = "Completed",
                         },
+                    });
+                    context.SaveChanges();
+                }
+
+                if (!context.Projects.Any())
+                {
+                    var projectStatusActive = context.ProjectStatuses.FirstOrDefault(p => p.Code == "Draft");
+                    var projectClient = context.Clients.FirstOrDefault(c => c.Name == "Test Client1");
+
+                    context.Projects.AddRange(new List<Project>()
+                    {
+                        new Project()
+                        {
+                            Name = "Test Project",
+                            ProjectStatus = projectStatusActive,
+                            Client = projectClient,
+                            Budget = 10000,
+                            CostEstimate = 4000,
+                            Notes = "test notes!",
+                            Description = "description of test project",
+                            StartDate = DateTime.Now,
+                            Rate = 150,
+                            EstimatedHours = 0,
+                            EstimatedWeldingWire = 1000,
+                        }
                     });
                     context.SaveChanges();
                 }
