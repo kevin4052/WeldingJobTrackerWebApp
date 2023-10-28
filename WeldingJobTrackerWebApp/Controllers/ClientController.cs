@@ -4,16 +4,19 @@ using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 using WeldingJobTrackerWebApp.Repositories;
+using WeldingJobTrackerWebApp.ViewModels;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {
     public class ClientController : Controller
     {
         private readonly IClientRepository _clientRepository;
+        private readonly IPhotoService _photoService;
 
-        public ClientController(IClientRepository clientRepository) 
+        public ClientController(IClientRepository clientRepository, IPhotoService photoService) 
         {
             _clientRepository = clientRepository;
+            _photoService = photoService;
         }
         public async Task<IActionResult> Index()
         {
@@ -33,15 +36,35 @@ namespace WeldingJobTrackerWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Client client)
+        public async Task<IActionResult> Create(CreateClientViewModel clientVM)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(client);
+                var imageUploadresult = await _photoService.AddPhotoAsync(clientVM.Image);
+                var client = new Client
+                {
+                    Name = clientVM.Name,
+                    Address = new Address
+                    {
+                        Street1 = clientVM.Address.Street1,
+                        Street2 = clientVM.Address.Street2,
+                        City = clientVM.Address.City,
+                        State = clientVM.Address.State,
+                        PostalCode = clientVM.Address.PostalCode,
+                    },
+                    Image = new Image
+                    {
+                        Url = imageUploadresult.Url.ToString(),
+                    }
+
+                };
+                _clientRepository.Add(client);
+                return RedirectToAction("Index");
+            } else {
+                ModelState.AddModelError("", "Photo upload failed");
             }
 
-            _clientRepository.Add(client);
-            return RedirectToAction("Index");
+            return View(clientVM);
         }
     }
 }

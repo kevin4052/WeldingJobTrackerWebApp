@@ -28,12 +28,20 @@ namespace WeldingJobTrackerWebApp.Repositories
 
         public async Task<IEnumerable<Client>> GetAll()
         {
-            return await _context.Clients.Include(c => c.Address).ToListAsync();
+            return await _context.Clients
+                .Include(c => c.Address)
+                .Include(c => c.Image)
+                .ToListAsync();
         }
 
         public async Task<Client> GetByIdAsync(int id)
         {
-            return await _context.Clients.Include(c => c.Address).FirstOrDefaultAsync(c => c.Id == id);
+            var client = await _context.Clients
+                .Include(c => c.Address)
+                .Include(c => c.Image)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            return client!;
         }
 
         public bool Save()

@@ -13,37 +13,6 @@ namespace WeldingJobTrackerWebApp.Data
 
                 context.Database.EnsureCreated();
 
-                if (!context.Clients.Any())
-                {
-                    context.Clients.AddRange(new List<Client>()
-                    {
-                        new Client()
-                        {
-                            Name = "Test Client1",
-                            Address = new Address()
-                            {
-                                Street1 = "321 FM Rd 2222 ",
-                                Street2 = "Apt 11306",
-                                City = "Austin",
-                                State = State.TX,
-                                PostalCode = "78730"
-                            }
-                        },
-                        new Client()
-                        {
-                            Name = "Test Client2",
-                            Address = new Address()
-                            {
-                                Street1 = "321 Pike Place",
-                                City = "Seattle",
-                                State = State.WA,
-                                PostalCode = "54321"
-                            }
-                        }
-                    });
-                    context.SaveChanges();
-                }
-
                 if (!context.ProjectStatuses.Any())
                 {
                     context.ProjectStatuses.AddRange(new List<ProjectStatus>()
@@ -78,6 +47,38 @@ namespace WeldingJobTrackerWebApp.Data
                             Code = "Completed",
                             Name = "Completed",
                         },
+                    });
+                    context.SaveChanges();
+                }
+                
+                if (!context.Clients.Any())
+                {
+                    context.Clients.AddRange(new List<Client>()
+                    {
+                        new Client()
+                        {
+                            Name = "Test Client1",
+                            Address = new Address()
+                            {
+                                Street1 = "321 FM Rd 2222 ",
+                                Street2 = "Apt 11306",
+                                City = "Austin",
+                                State = State.TX,
+                                PostalCode = "78730"
+                            },
+
+                        },
+                        new Client()
+                        {
+                            Name = "Test Client2",
+                            Address = new Address()
+                            {
+                                Street1 = "321 Pike Place",
+                                City = "Seattle",
+                                State = State.WA,
+                                PostalCode = "54321"
+                            }
+                        }
                     });
                     context.SaveChanges();
                 }

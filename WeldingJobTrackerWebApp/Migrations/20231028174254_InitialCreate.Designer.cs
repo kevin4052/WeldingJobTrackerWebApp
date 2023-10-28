@@ -12,7 +12,7 @@ using WeldingJobTrackerWebApp.Data;
 namespace WeldingJobTrackerWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231027011640_InitialCreate")]
+    [Migration("20231028174254_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -71,6 +71,9 @@ namespace WeldingJobTrackerWebApp.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ImageId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,7 +82,26 @@ namespace WeldingJobTrackerWebApp.Migrations
 
                     b.HasIndex("AddressId");
 
+                    b.HasIndex("ImageId");
+
                     b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Project", b =>
@@ -216,7 +238,15 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Image", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Project", b =>

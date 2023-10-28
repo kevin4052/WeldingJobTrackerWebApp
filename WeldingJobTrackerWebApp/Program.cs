@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
+using WeldingJobTrackerWebApp.Helpers;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Repositories;
+using WeldingJobTrackerWebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IPhotoService, PhotoService> ();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

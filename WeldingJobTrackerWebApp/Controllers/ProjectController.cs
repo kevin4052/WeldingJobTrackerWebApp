@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
-using WeldingJobTrackerWebApp.Repositories;
+using WeldingJobTrackerWebApp.ViewModels;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {
@@ -27,19 +28,38 @@ namespace WeldingJobTrackerWebApp.Controllers
             return View(client);
         }
 
-        public IActionResult Create() 
+        public async Task<IActionResult> Create() 
         {
-            var projecStatuses = _projectStatusRepository.GetAll();
-            return View(projecStatuses);
+            var projectStatuses = await _projectStatusRepository.GetAll();
+            ViewBag.ProjectStatuses = new SelectList(projectStatuses);
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Project project)
+        public async Task<IActionResult> Create(CreateProjectViewModel projectVM)
         {
             if (!ModelState.IsValid)
             {
-                return View(project);
+                ModelState.AddModelError("", "Project save failed");
+                return View(projectVM);                
             }
+
+            var project = new Project
+            {
+                Name = projectVM.Name,
+                ProjectStatusId = projectVM.ProjectStatus.Id,
+                ClientId = projectVM?.Client?.Id ?? 0,
+                Budget = projectVM?.Budget ?? 0,
+                CostEstimate = projectVM?.CostEstimate ?? 0,
+                Description = projectVM?.Description,
+                Notes = projectVM?.Notes,
+                StartDate = (DateTime)(projectVM.StartDate),
+                EndDate = (DateTime)(projectVM.EndDate),
+                Rate = projectVM?.Rate ?? 0,
+                EstimatedHours = projectVM?.EstimatedHours ?? 0,
+                EstimatedWeldingWire = projectVM?.EstimatedWeldingWire ?? 0,
+
+            };
 
             _projectRepository.Add(project);
             return RedirectToAction("Index");

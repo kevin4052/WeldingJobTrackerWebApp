@@ -1,12 +1,13 @@
 ﻿@using WeldingJobTrackerWebApp.Data.Enum;
-@model Client
+@using WeldingJobTrackerWebApp.ViewModels;
+@model CreateClientViewModel;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
 
-<form method="post" asp-action="Create">
+<form method="post" asp-action="Create" enctype="multipart/form-data">
     <div class="form-group">
         <label asp-for="Name">Name</label>
         <input asp-for="Name" type="text" class="form-control" aria-describedby="Project Name" placeholder="Project Name">
@@ -38,6 +39,11 @@
         <label asp-for="Address.PostalCode">Zip</label>
         <input asp-for="Address.PostalCode" type="text" class="form-control" aria-describedby="Zip" placeholder="Zip">
         <span asp-validation-for="Address.PostalCode" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Image">Image</label>
+        <input asp-for="Image" type="file" class="form-control" aria-describedby="Image" placeholder="Image">
+        <span asp-validation-for="Image" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>
