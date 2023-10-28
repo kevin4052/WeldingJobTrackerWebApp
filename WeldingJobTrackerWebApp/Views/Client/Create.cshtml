@@ -1,0 +1,44 @@
+﻿@using WeldingJobTrackerWebApp.Data.Enum;
+@model Client
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<form method="post" asp-action="Create">
+    <div class="form-group">
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" type="text" class="form-control" aria-describedby="Project Name" placeholder="Project Name">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address.Street1">Street</label>
+        <input asp-for="Address.Street1" type="text" class="form-control" aria-describedby="Street" placeholder="Street">
+        <span asp-validation-for="Address.Street1" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address.Street2">Apt/Suit</label>
+        <input asp-for="Address.Street2" type="text" class="form-control" aria-describedby="Apt/Suit" placeholder="Apt/Suit">
+        <span asp-validation-for="Address.Street2" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address.City">City</label>
+        <input asp-for="Address.City" type="text" class="form-control" aria-describedby="City" placeholder="City">
+        <span asp-validation-for="Address.City" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address.State">State</label>
+        <select asp-for="Address.State" asp-items="@Html.GetEnumSelectList<State>()" class="form-control">
+            <option>--Select--</option>
+        </select>
+        <span asp-validation-for="Address.State" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address.PostalCode">Zip</label>
+        <input asp-for="Address.PostalCode" type="text" class="form-control" aria-describedby="Zip" placeholder="Zip">
+        <span asp-validation-for="Address.PostalCode" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

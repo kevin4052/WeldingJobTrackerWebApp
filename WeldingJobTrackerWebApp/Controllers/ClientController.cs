@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
+using WeldingJobTrackerWebApp.Models;
+using WeldingJobTrackerWebApp.Repositories;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {
@@ -23,6 +25,23 @@ namespace WeldingJobTrackerWebApp.Controllers
         {
             var client = await _clientRepository.GetByIdAsync(id);
             return View(client);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Client client)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(client);
+            }
+
+            _clientRepository.Add(client);
+            return RedirectToAction("Index");
         }
     }
 }
