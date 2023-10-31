@@ -31,12 +31,22 @@ namespace WeldingJobTrackerWebApp.Controllers
         public async Task<IActionResult> Create() 
         {
             var projectStatuses = await _projectStatusRepository.GetAll();
-            ViewBag.ProjectStatuses = new SelectList(projectStatuses);
-            return View();
+
+            var viewModel = new ProjectViewModel();
+            viewModel.ProjectStatusSelectList = new List<SelectListItem>();
+
+            foreach (var projectStatus in projectStatuses)
+            {
+                viewModel.ProjectStatusSelectList.Add(new SelectListItem { 
+                    Text = projectStatus.Name, 
+                    Value = projectStatus.Code
+                });
+            }
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProjectViewModel projectVM)
+        public async Task<IActionResult> Create(ProjectViewModel projectVM)
         {
             if (!ModelState.IsValid)
             {
@@ -44,10 +54,12 @@ namespace WeldingJobTrackerWebApp.Controllers
                 return View(projectVM);                
             }
 
+            var selectedProjectStatus = await _projectStatusRepository.GetByCodeAsync(projectVM.SelectedProjectStatus);
+
             var project = new Project
             {
                 Name = projectVM.Name,
-                ProjectStatusId = projectVM.ProjectStatus.Id,
+                ProjectStatusId = selectedProjectStatus.Id,
                 ClientId = projectVM?.Client?.Id ?? 0,
                 Budget = projectVM?.Budget ?? 0,
                 CostEstimate = projectVM?.CostEstimate ?? 0,
