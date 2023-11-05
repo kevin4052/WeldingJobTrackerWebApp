@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using WeldingJobTrackerWebApp.Models;
+﻿using WeldingJobTrackerWebApp.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WeldingJobTrackerWebApp.ViewModels

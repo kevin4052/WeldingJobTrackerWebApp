@@ -38,31 +38,57 @@ namespace WeldingJobTrackerWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateClientViewModel clientVM)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var imageUploadresult = await _photoService.AddPhotoAsync(clientVM.Image);
-                var client = new Client
-                {
-                    Name = clientVM.Name,
-                    Address = new Address
-                    {
-                        Street1 = clientVM.Address.Street1,
-                        Street2 = clientVM.Address.Street2,
-                        City = clientVM.Address.City,
-                        State = clientVM.Address.State,
-                        PostalCode = clientVM.Address.PostalCode,
-                    },
-                    Image = new Image
-                    {
-                        Url = imageUploadresult.Url.ToString(),
-                    }
-
-                };
-                _clientRepository.Add(client);
-                return RedirectToAction("Index");
-            } else {
-                ModelState.AddModelError("", "Photo upload failed");
+                ModelState.AddModelError("", "creating client failed");
+                return View(clientVM);
             }
+
+            var imageUploadresult = await _photoService.AddPhotoAsync(clientVM.Image);
+
+            if (imageUploadresult.Error != null)
+            {
+                ModelState.AddModelError("", "creating client failed");
+                return View(clientVM);
+            }
+
+            var client = new Client
+            {
+                Name = clientVM.Name,
+                Address = new Address
+                {
+                    Street1 = clientVM.Address.Street1,
+                    Street2 = clientVM.Address.Street2,
+                    City = clientVM.Address.City,
+                    State = clientVM.Address.State,
+                    PostalCode = clientVM.Address.PostalCode,
+                },
+                Image = new Image
+                {
+                    Url = imageUploadresult.Url.ToString(),
+                }
+
+            };
+
+            _clientRepository.Add(client);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var client = await _clientRepository.GetByIdAsync(id);
+            if (client == null)
+            {
+                return View("Error");
+            }
+
+            var clientVM = new EditClientViewModel
+            {
+                Name = client.Name,
+                AddressId = client.AddressId,
+                Address = client.Address,
+                Image = (IFormFile)(client?.Image)
+            };
 
             return View(clientVM);
         }
