@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
-using WeldingJobTrackerWebApp.Repositories;
 using WeldingJobTrackerWebApp.ViewModels;
 
 namespace WeldingJobTrackerWebApp.Controllers
@@ -36,32 +33,32 @@ namespace WeldingJobTrackerWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateClientViewModel clientVM)
+        public async Task<IActionResult> Create(CreateClientViewModel clientViewModel)
         {
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "creating client failed");
-                return View(clientVM);
+                return View(clientViewModel);
             }
 
-            var imageUploadresult = await _photoService.AddPhotoAsync(clientVM.Image);
+            var imageUploadresult = await _photoService.AddPhotoAsync(clientViewModel.Image);
 
             if (imageUploadresult.Error != null)
             {
                 ModelState.AddModelError("", "creating client failed");
-                return View(clientVM);
+                return View(clientViewModel);
             }
 
             var client = new Client
             {
-                Name = clientVM.Name,
+                Name = clientViewModel.Name,
                 Address = new Address
                 {
-                    Street1 = clientVM.Address.Street1,
-                    Street2 = clientVM.Address.Street2,
-                    City = clientVM.Address.City,
-                    State = clientVM.Address.State,
-                    PostalCode = clientVM.Address.PostalCode,
+                    Street1 = clientViewModel.Address.Street1,
+                    Street2 = clientViewModel.Address.Street2,
+                    City = clientViewModel.Address.City,
+                    State = clientViewModel.Address.State,
+                    PostalCode = clientViewModel.Address.PostalCode,
                 },
                 Image = new Image
                 {
@@ -77,20 +74,55 @@ namespace WeldingJobTrackerWebApp.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var client = await _clientRepository.GetByIdAsync(id);
+
             if (client == null)
             {
                 return View("Error");
             }
 
-            var clientVM = new EditClientViewModel
+            var clientViewModel = new EditClientViewModel
             {
+                Id = client.Id,
                 Name = client.Name,
                 AddressId = client.AddressId,
                 Address = client.Address,
-                Image = (IFormFile)(client?.Image)
+                ImageUrl = client?.Image?.Url
             };
 
-            return View(clientVM);
+            return View(clientViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, EditClientViewModel clientViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Failed to update client");
+                return View(clientViewModel);
+            }
+
+            var client = await _clientRepository.GetByIdAsyncNoTracking(id);
+
+            if (client == null)
+            {
+                return View("Error");
+            }
+
+            var imageUploadresult = await _photoService.AddPhotoAsync(clientViewModel.Image);
+
+            if (imageUploadresult.Error != null)
+            {
+                ModelState.AddModelError("Image", "Photo upload failed");
+                return View(clientViewModel);
+            }
+
+            client.Name = clientViewModel.Name;
+            client.Address = clientViewModel.Address;
+            client.Image.Url = clientViewModel.ImageUrl;
+
+            _clientRepository.Update(client);
+
+            return Redirect("index");
         }
     }
 }

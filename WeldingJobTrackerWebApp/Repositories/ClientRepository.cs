@@ -44,6 +44,17 @@ namespace WeldingJobTrackerWebApp.Repositories
             return client!;
         }
 
+        public async Task<Client> GetByIdAsyncNoTracking(int id)
+        {
+            var client = await _context.Clients
+                .Include(c => c.Address)
+                .Include(c => c.Image)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            return client!;
+        }
+
         public bool Save()
         {
             var save = _context.SaveChanges();

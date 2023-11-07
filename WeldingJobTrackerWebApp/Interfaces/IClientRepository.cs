@@ -6,6 +6,7 @@ namespace WeldingJobTrackerWebApp.Interfaces
     {
         Task<IEnumerable<Client>> GetAll();
         Task<Client> GetByIdAsync(int id);
+        Task<Client> GetByIdAsyncNoTracking(int id);
         bool Add(Client client);
         bool Update(Client client);
         bool Delete(Client client);
