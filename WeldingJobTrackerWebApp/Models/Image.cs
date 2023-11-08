@@ -5,6 +5,7 @@ namespace WeldingJobTrackerWebApp.Models
     public class Image
     {
         [Key] public int Id { get; set; }
+        [Required] public string publicId { get; set; }
         [Required] public string Url { get; set; }
     }
 }

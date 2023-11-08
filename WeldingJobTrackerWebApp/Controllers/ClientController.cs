@@ -63,6 +63,7 @@ namespace WeldingJobTrackerWebApp.Controllers
                 Image = new Image
                 {
                     Url = imageUploadresult.Url.ToString(),
+                    publicId = imageUploadresult.PublicId
                 }
 
             };
@@ -109,10 +110,10 @@ namespace WeldingJobTrackerWebApp.Controllers
             }
 
             var imageUploadresult = await _photoService.AddPhotoAsync(clientViewModel.Image);
-
+                
             if (imageUploadresult.Error != null)
             {
-                ModelState.AddModelError("Image", "Photo upload failed");
+                ModelState.AddModelError("Image", imageUploadresult.Error.Message);
                 return View(clientViewModel);
             }
 

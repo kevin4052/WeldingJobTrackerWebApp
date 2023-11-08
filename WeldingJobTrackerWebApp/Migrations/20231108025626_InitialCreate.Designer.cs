@@ -12,7 +12,7 @@ using WeldingJobTrackerWebApp.Data;
 namespace WeldingJobTrackerWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231028174254_InitialCreate")]
+    [Migration("20231108025626_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -96,6 +96,10 @@ namespace WeldingJobTrackerWebApp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("publicId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
