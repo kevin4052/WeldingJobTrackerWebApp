@@ -1,4 +1,5 @@
-﻿using WeldingJobTrackerWebApp.Data.Enum;
+﻿using Microsoft.AspNetCore.Identity;
+using WeldingJobTrackerWebApp.Data.Enum;
 using WeldingJobTrackerWebApp.Models;
 
 namespace WeldingJobTrackerWebApp.Data
@@ -108,6 +109,71 @@ namespace WeldingJobTrackerWebApp.Data
                     context.SaveChanges();
                 }
 
+            }
+        }
+
+        public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationBuilder)
+        {
+            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            {
+                //Roles
+                var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
+                    await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+                if (!await roleManager.RoleExistsAsync(UserRoles.Welder))
+                    await roleManager.CreateAsync(new IdentityRole(UserRoles.Welder));
+
+                //Users
+                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<User>>();
+                var adminUserEmail = "cobra40@gmail.com";
+
+                var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
+                if (adminUser == null)
+                {
+                    var newAdminUser = new User()
+                    {
+                        UserName = "cobra40",
+                        FirstName = "kevin",
+                        LastName = "Hernandez",
+                        Email = adminUserEmail,
+                        EmailConfirmed = true,
+                        Address = new Address()
+                        {
+                            Street1 = "123 Main St",
+                            City = "Audtin",
+                            State = State.TX,
+                            PostalCode = "33333"
+                        }
+                    };
+                    await userManager.CreateAsync(newAdminUser, "Coding@1234?");
+                    await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
+                }
+
+                var appUserEmail = "user@aws11.com";
+
+                var appUser = await userManager.FindByEmailAsync(appUserEmail);
+                if (appUser == null)
+                {
+                    var newAppUser = new User()
+                    {
+                        UserName = "welder21",
+                        FirstName = "Alex",
+                        MiddleName = "Omar",
+                        LastName = "Hernandez-Diaz",
+                        Email = appUserEmail,
+                        EmailConfirmed = true,
+                        Address = new Address()
+                        {
+                            Street1 = "123 Main St",
+                            City = "Charlotte",
+                            State = State.AZ,
+                            PostalCode = "33333"
+                        }
+                    };
+                    await userManager.CreateAsync(newAppUser, "Coding@1234?");
+                    await userManager.AddToRoleAsync(newAppUser, UserRoles.Welder);
+                }
             }
         }
     }

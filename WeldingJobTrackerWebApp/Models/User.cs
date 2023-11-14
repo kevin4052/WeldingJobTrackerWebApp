@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeldingJobTrackerWebApp.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key] public int Id { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }
