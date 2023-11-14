@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using WeldingJobTrackerWebApp.Models;
+﻿using WeldingJobTrackerWebApp.Models;
 
 namespace WeldingJobTrackerWebApp.ViewModels
 {
@@ -8,7 +6,8 @@ namespace WeldingJobTrackerWebApp.ViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
+        public int AddressId { get; set; }
         public Address? Address { get; set; }
     }
 }

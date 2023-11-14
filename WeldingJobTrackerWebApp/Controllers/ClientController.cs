@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Migrations;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 using WeldingJobTrackerWebApp.ViewModels;
@@ -99,7 +100,7 @@ namespace WeldingJobTrackerWebApp.Controllers
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Failed to update client");
-                return View(clientViewModel);
+                return View("Edit", clientViewModel);
             }
 
             var client = await _clientRepository.GetByIdAsyncNoTracking(id);
@@ -111,19 +112,45 @@ namespace WeldingJobTrackerWebApp.Controllers
 
             var imageUploadresult = await _photoService.AddPhotoAsync(clientViewModel.Image);
                 
-            if (imageUploadresult.Error != null)
+            if (imageUploadresult != null && imageUploadresult.Error != null)
             {
-                ModelState.AddModelError("Image", imageUploadresult.Error.Message);
+                var errorMessage = imageUploadresult?.Error?.Message ?? "Error uploading image";
+                ModelState.AddModelError("Image", errorMessage);
                 return View(clientViewModel);
             }
 
-            client.Name = clientViewModel.Name;
-            client.Address = clientViewModel.Address;
-            client.Image.Url = clientViewModel.ImageUrl;
+            if (!string.IsNullOrEmpty(client.Image.publicId) && imageUploadresult != null)
+            {
+                await _photoService.DeletPhotoAsync(client.Image.publicId);
+            }
 
-            _clientRepository.Update(client);
+            var clientUpdate = new Client
+            {
+                Id = id,
+                Name = clientViewModel.Name,
+                AddressId = clientViewModel.AddressId,
+                //Address = clientViewModel.Address,
+                Address = new Address
+                {
+                    Id = client.Address.Id,
+                    Street1 = clientViewModel.Address.Street1,
+                    Street2 = clientViewModel.Address.Street2,
+                    City = clientViewModel.Address.City,
+                    State = clientViewModel.Address.State,
+                    PostalCode = clientViewModel.Address.PostalCode,
+                },
+                ImageId = client.Image.Id,
+                Image = new Image
+                {
+                    Id = client.Image.Id,
+                    publicId = imageUploadresult?.PublicId ?? client.Image.publicId,
+                    Url = imageUploadresult?.Url.ToString() ?? client.Image.Url
+                },
+            };            
 
-            return Redirect("index");
+            _clientRepository.Update(clientUpdate);
+
+            return RedirectToAction("Index");
         }
     }
 }

@@ -23,7 +23,13 @@ namespace WeldingJobTrackerWebApp.Services
         }
         public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
         {
+            if (file == null)
+            {
+                return null;
+            }
+
             var uploadResult = new ImageUploadResult();
+
             if(file.Length > 0)
             {
                 using var stream = file.OpenReadStream();
@@ -36,6 +42,7 @@ namespace WeldingJobTrackerWebApp.Services
 
                 uploadResult = await _cloudinary.UploadAsync(uploadParams);
             }
+
             return uploadResult;
         }
 
