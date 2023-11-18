@@ -12,7 +12,7 @@ using WeldingJobTrackerWebApp.Data;
 namespace WeldingJobTrackerWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231114025931_initialcreate")]
+    [Migration("20231118023918_initialcreate")]
     partial class initialcreate
     {
         /// <inheritdoc />
@@ -391,7 +391,6 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 

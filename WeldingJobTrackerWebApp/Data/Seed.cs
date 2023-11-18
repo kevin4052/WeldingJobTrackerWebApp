@@ -123,6 +123,8 @@ namespace WeldingJobTrackerWebApp.Data
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
                 if (!await roleManager.RoleExistsAsync(UserRoles.Welder))
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Welder));
+                if (!await roleManager.RoleExistsAsync(UserRoles.User))
+                    await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
 
                 //Users
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<User>>();
@@ -141,7 +143,7 @@ namespace WeldingJobTrackerWebApp.Data
                         Address = new Address()
                         {
                             Street1 = "123 Main St",
-                            City = "Audtin",
+                            City = "Austin",
                             State = State.TX,
                             PostalCode = "33333"
                         }

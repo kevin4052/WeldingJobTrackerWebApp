@@ -21,7 +21,8 @@ namespace WeldingJobTrackerWebApp.Controllers
 
         public IActionResult Login()
         {
-            return View();
+            var loginViewModal = new LoginViewModel();
+            return View(loginViewModal);
         }
 
         [HttpPost]
@@ -56,8 +57,51 @@ namespace WeldingJobTrackerWebApp.Controllers
                 return View(loginViewModel);
             }
 
-
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            var registerViewModel = new RegisterViewModel();
+            return View(registerViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(registerViewModel);
+            }
+
+            var user = await _userManager.FindByEmailAsync(registerViewModel.EmailAddress);
+
+            if (user != null) 
+            {
+                TempData["Error"] = "This email address is already being used";
+                return View(registerViewModel);
+            }
+
+            var newUser = new User
+            {
+                FirstName = registerViewModel.FirstName,
+                LastName = registerViewModel.LastName,
+                Email = registerViewModel.EmailAddress,
+                UserName = registerViewModel.EmailAddress
+            };
+
+            var newUserResponce = await _userManager.CreateAsync(newUser, registerViewModel.Password);
+
+            if (!newUserResponce.Succeeded)
+            {
+                TempData["Error"] = newUserResponce.Errors.First().Description;
+                return View(registerViewModel);
+            }
+
+            await _userManager.AddToRoleAsync(newUser, UserRoles.User);
+
+            return RedirectToAction("Login", "Account");
         }
 
     }
