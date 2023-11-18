@@ -11,12 +11,14 @@ namespace WeldingJobTrackerWebApp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ApplicationDbContext _context;
+        private readonly ILookupNormalizer _normalizer;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context, ILookupNormalizer normalizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _normalizer = normalizer;
         }
 
         public IActionResult Login()
@@ -49,9 +51,9 @@ namespace WeldingJobTrackerWebApp.Controllers
                 return View(loginViewModel);
             }
 
-            var result = _signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false);
 
-            if (!result.IsCompletedSuccessfully)
+            if (!result.Succeeded)
             { 
                 TempData["Error"] = "Email and Password did not match an account";
                 return View(loginViewModel);
@@ -83,12 +85,15 @@ namespace WeldingJobTrackerWebApp.Controllers
                 return View(registerViewModel);
             }
 
+            var normalizedEmail = _userManager.NormalizeEmail(registerViewModel.EmailAddress);
             var newUser = new User
             {
                 FirstName = registerViewModel.FirstName,
                 LastName = registerViewModel.LastName,
                 Email = registerViewModel.EmailAddress,
-                UserName = registerViewModel.EmailAddress
+                UserName = registerViewModel.EmailAddress,
+                NormalizedEmail = normalizedEmail,
+                NormalizedUserName = normalizedEmail,
             };
 
             var newUserResponce = await _userManager.CreateAsync(newUser, registerViewModel.Password);
@@ -102,6 +107,13 @@ namespace WeldingJobTrackerWebApp.Controllers
             await _userManager.AddToRoleAsync(newUser, UserRoles.User);
 
             return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
     }

@@ -135,7 +135,7 @@ namespace WeldingJobTrackerWebApp.Data
                 {
                     var newAdminUser = new User()
                     {
-                        UserName = "cobra40",
+                        UserName = adminUserEmail,
                         FirstName = "kevin",
                         LastName = "Hernandez",
                         Email = adminUserEmail,
@@ -159,7 +159,7 @@ namespace WeldingJobTrackerWebApp.Data
                 {
                     var newAppUser = new User()
                     {
-                        UserName = "welder21",
+                        UserName = appUserEmail,
                         FirstName = "Alex",
                         MiddleName = "Omar",
                         LastName = "Hernandez-Diaz",
