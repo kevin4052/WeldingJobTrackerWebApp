@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WeldingJobTrackerWebApp.Data;
 
@@ -11,9 +12,11 @@ using WeldingJobTrackerWebApp.Data;
 namespace WeldingJobTrackerWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231119144211_ProjectModel_AddMembersList")]
+    partial class ProjectModel_AddMembersList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -380,6 +383,9 @@ namespace WeldingJobTrackerWebApp.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -401,6 +407,8 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("ProjectId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -482,7 +490,7 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .IsRequired();
 
                     b.HasOne("WeldingJobTrackerWebApp.Models.User", "ProjectLead")
-                        .WithMany("Projects")
+                        .WithMany()
                         .HasForeignKey("ProjectLeadId");
 
                     b.HasOne("WeldingJobTrackerWebApp.Models.ProjectStatus", "ProjectStatus")
@@ -504,12 +512,16 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId");
 
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Project", null)
+                        .WithMany("Members")
+                        .HasForeignKey("ProjectId");
+
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.User", b =>
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Project", b =>
                 {
-                    b.Navigation("Projects");
+                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }

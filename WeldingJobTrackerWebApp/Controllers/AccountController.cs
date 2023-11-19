@@ -10,15 +10,11 @@ namespace WeldingJobTrackerWebApp.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly ApplicationDbContext _context;
-        private readonly ILookupNormalizer _normalizer;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context, ILookupNormalizer normalizer)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _context = context;
-            _normalizer = normalizer;
         }
 
         public IActionResult Login()

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using WeldingJobTrackerWebApp.Data;
+﻿using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 
@@ -10,22 +8,20 @@ namespace WeldingJobTrackerWebApp.Repositories
     {
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserRepository _userRepository;
 
-        public DashboardRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) 
+        public DashboardRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository) 
         { 
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _userRepository = userRepository;
         }
 
         public async Task<List<Project>> GetAllUserProjects()
         {
             var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
-            var projects = await _context.Projects
-                .Include(p => p.Client)
-                .Include(p => p.ProjectStatus)
-                .Where(p => p.Members.Any(m => m.Id == currentUserId))
-                .ToListAsync();
-            return projects;
+            var user = await _userRepository.GetUserbyIdAsync(currentUserId);
+            return user.Projects.ToList();
         }
     }
 }

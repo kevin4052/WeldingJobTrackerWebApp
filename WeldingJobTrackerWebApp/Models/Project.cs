@@ -23,6 +23,5 @@ namespace WeldingJobTrackerWebApp.Models
         public int EstimatedWeldingWire {  get; set; }
         public int TotalWeldingWire {  get; set; }
         public User? ProjectLead {  get; set; }
-        public ICollection<User>? Members {  get; set; }
     }
 }
