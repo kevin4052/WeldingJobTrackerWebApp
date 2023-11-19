@@ -16,5 +16,15 @@ namespace WeldingJobTrackerWebApp.Data
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectStatus> ProjectStatuses { get; set; }
         public DbSet<Image> Images { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Project>()
+                .HasMany(p => p.UserMembers)
+                .WithMany(u => u.Projects)
+                .UsingEntity(j => j.ToTable("ProjectUser"));
+
+            base.OnModelCreating(builder);
+        }
     }
 }

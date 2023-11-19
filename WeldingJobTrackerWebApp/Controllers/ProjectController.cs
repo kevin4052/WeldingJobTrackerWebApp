@@ -10,11 +10,13 @@ namespace WeldingJobTrackerWebApp.Controllers
     {
         private readonly IProjectRepository _projectRepository;
         private readonly IProjectStatusRepository _projectStatusRepository;
+        private readonly IUserRepository _userRepository;
 
-        public ProjectController(IProjectRepository projectRepository, IProjectStatusRepository projectStatusRepository)
+        public ProjectController(IProjectRepository projectRepository, IProjectStatusRepository projectStatusRepository, IUserRepository userRepository)
         {
             _projectRepository = projectRepository;
             _projectStatusRepository = projectStatusRepository;
+            _userRepository = userRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -31,6 +33,7 @@ namespace WeldingJobTrackerWebApp.Controllers
         public async Task<IActionResult> Create() 
         {
             var projectStatuses = await _projectStatusRepository.GetAll();
+            var userNameIds = await _userRepository.GetAllUsersNameId();
 
             var viewModel = new ProjectViewModel();
             viewModel.ProjectStatusSelectList = new List<SelectListItem>();
@@ -40,6 +43,17 @@ namespace WeldingJobTrackerWebApp.Controllers
                 viewModel.ProjectStatusSelectList.Add(new SelectListItem { 
                     Text = projectStatus.Name, 
                     Value = projectStatus.Code
+                });
+            }
+
+            viewModel.UserSelectList = new List<SelectListItem>();
+
+            foreach (var userNameId in userNameIds)
+            {
+                viewModel.UserSelectList.Add(new SelectListItem
+                {
+                    Text = userNameId.Name,
+                    Value = userNameId.Id
                 });
             }
             return View(viewModel);
@@ -70,7 +84,7 @@ namespace WeldingJobTrackerWebApp.Controllers
                 Rate = projectVM?.Rate ?? 0,
                 EstimatedHours = projectVM?.EstimatedHours ?? 0,
                 EstimatedWeldingWire = projectVM?.EstimatedWeldingWire ?? 0,
-
+                //Add UserMembers
             };
 
             _projectRepository.Add(project);

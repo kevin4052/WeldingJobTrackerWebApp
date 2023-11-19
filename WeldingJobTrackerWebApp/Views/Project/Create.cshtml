@@ -18,6 +18,11 @@
         <span asp-validation-for="SelectedProjectStatus" class="text-danger"></span>
     </div>
     <div class="form-group">
+        <label asp-for="SelectedUser">User</label>
+        <select asp-for="SelectedUser" class="form-control" asp-items="Model.UserSelectList"></select>
+        <span asp-validation-for="SelectedUser" class="text-danger"></span>
+    </div>
+    <div class="form-group">
         <label asp-for="Description">Description</label>
         <input asp-for="Description" type="text" class="form-control" aria-describedby="Description" placeholder="Description">
         <span asp-validation-for="Description" class="text-danger"></span>

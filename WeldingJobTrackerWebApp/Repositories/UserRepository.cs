@@ -14,6 +14,21 @@ namespace WeldingJobTrackerWebApp.Repositories
             _context = applicationDbContext;
         }
 
+        public class UserNameAndId
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        public async Task<IEnumerable<UserNameAndId>> GetAllUsersNameId()
+        {
+            var users = await _context.Users
+                .Select(u => new UserNameAndId { Id = u.Id, Name = u.LastName + ", " + u.FirstName })
+                .OrderBy(u => u.Name)
+                .ToListAsync();
+            return users;
+        }
+
         public async Task<User> GetUserbyIdAsync(string id)
         {
             return await _context.Users

@@ -32,6 +32,7 @@ namespace WeldingJobTrackerWebApp.Repositories
             return await _context.Projects
                 .Include(p => p.Client)
                 .Include(p => p.ProjectStatus)
+                .Include(p => p.UserMembers)
                 .ToListAsync();
         }
 
@@ -40,6 +41,7 @@ namespace WeldingJobTrackerWebApp.Repositories
             var project = await _context.Projects
                 .Include(p => p.Client)
                 .Include(p => p.ProjectStatus)
+                .Include(p => p.UserMembers)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             return project!;
