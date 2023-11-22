@@ -2,6 +2,7 @@
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
+using static WeldingJobTrackerWebApp.Repositories.UserRepository;
 
 namespace WeldingJobTrackerWebApp.Repositories
 {
@@ -12,6 +13,11 @@ namespace WeldingJobTrackerWebApp.Repositories
         public ClientRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+        public class ClientNameId
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
         }
 
         public bool Add(Client client)
@@ -32,6 +38,15 @@ namespace WeldingJobTrackerWebApp.Repositories
                 .Include(c => c.Address)
                 .Include(c => c.Image)
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ClientNameId>> GetAllClientNameId()
+        {
+            var clients = await _context.Clients
+                .Select(u => new ClientNameId { Id = u.Id, Name = u.Name })
+                .OrderBy(u => u.Name)
+                .ToListAsync();
+            return clients;
         }
 
         public async Task<Client> GetByIdAsync(int id)

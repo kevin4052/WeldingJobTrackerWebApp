@@ -13,6 +13,11 @@
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="form-group">
+        <label asp-for="SelectedClient">Client</label>
+        <select asp-for="SelectedClient" class="form-control" asp-items="Model.ClientSelectList"></select>
+        <span asp-validation-for="SelectedClient" class="text-danger"></span>
+    </div>
+    <div class="form-group">
         <label asp-for="SelectedProjectStatus">Project State</label>
         <select asp-for="SelectedProjectStatus" class="form-control" asp-items="Model.ProjectStatusSelectList"></select>
         <span asp-validation-for="SelectedProjectStatus" class="text-danger"></span>

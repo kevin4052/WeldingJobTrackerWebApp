@@ -11,12 +11,18 @@ namespace WeldingJobTrackerWebApp.Controllers
         private readonly IProjectRepository _projectRepository;
         private readonly IProjectStatusRepository _projectStatusRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IClientRepository _clientRepository;
 
-        public ProjectController(IProjectRepository projectRepository, IProjectStatusRepository projectStatusRepository, IUserRepository userRepository)
+        public ProjectController(
+            IProjectRepository projectRepository, 
+            IProjectStatusRepository projectStatusRepository, 
+            IUserRepository userRepository, 
+            IClientRepository clientRepository)
         {
             _projectRepository = projectRepository;
             _projectStatusRepository = projectStatusRepository;
             _userRepository = userRepository;
+            _clientRepository = clientRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -34,10 +40,11 @@ namespace WeldingJobTrackerWebApp.Controllers
         {
             var projectStatuses = await _projectStatusRepository.GetAll();
             var userNameIds = await _userRepository.GetAllUsersNameId();
+            var clients = await _clientRepository.GetAllClientNameId();
 
             var viewModel = new ProjectViewModel();
-            viewModel.ProjectStatusSelectList = new List<SelectListItem>();
 
+            viewModel.ProjectStatusSelectList = new List<SelectListItem>();
             foreach (var projectStatus in projectStatuses)
             {
                 viewModel.ProjectStatusSelectList.Add(new SelectListItem { 
@@ -47,7 +54,6 @@ namespace WeldingJobTrackerWebApp.Controllers
             }
 
             viewModel.UserSelectList = new List<SelectListItem>();
-
             foreach (var userNameId in userNameIds)
             {
                 viewModel.UserSelectList.Add(new SelectListItem
@@ -56,36 +62,50 @@ namespace WeldingJobTrackerWebApp.Controllers
                     Value = userNameId.Id
                 });
             }
+
+            viewModel.ClientSelectList = new List<SelectListItem>();
+            foreach (var client in clients)
+            {
+                viewModel.ClientSelectList.Add(new SelectListItem
+                {
+                    Text = client.Name,
+                    Value = client.Id.ToString()
+                });
+            }
+
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ProjectViewModel projectVM)
+        public async Task<IActionResult> Create(ProjectViewModel projectViewModel)
         {
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Project save failed");
-                return View(projectVM);                
+                return View(projectViewModel);                
             }
 
-            var selectedProjectStatus = await _projectStatusRepository.GetByCodeAsync(projectVM.SelectedProjectStatus);
+            var selectedProjectStatus = await _projectStatusRepository.GetByCodeAsync(projectViewModel.SelectedProjectStatus);
+            var selectedUser = await _userRepository.GetUserbyIdAsync(projectViewModel.SelectedUser);
 
             var project = new Project
             {
-                Name = projectVM.Name,
+                Name = projectViewModel.Name,
                 ProjectStatusId = selectedProjectStatus.Id,
-                ClientId = projectVM?.Client?.Id ?? 0,
-                Budget = projectVM?.Budget ?? 0,
-                CostEstimate = projectVM?.CostEstimate ?? 0,
-                Description = projectVM?.Description,
-                Notes = projectVM?.Notes,
-                StartDate = (DateTime)(projectVM.StartDate),
-                EndDate = (DateTime)(projectVM.EndDate),
-                Rate = projectVM?.Rate ?? 0,
-                EstimatedHours = projectVM?.EstimatedHours ?? 0,
-                EstimatedWeldingWire = projectVM?.EstimatedWeldingWire ?? 0,
-                //Add UserMembers
+                ClientId = Int32.Parse(projectViewModel?.SelectedClient),
+                Budget = projectViewModel?.Budget ?? 0,
+                CostEstimate = projectViewModel?.CostEstimate ?? 0,
+                Description = projectViewModel?.Description,
+                Notes = projectViewModel?.Notes,
+                StartDate = (DateTime)(projectViewModel.StartDate),
+                EndDate = (DateTime)(projectViewModel.EndDate),
+                Rate = projectViewModel?.Rate ?? 0,
+                EstimatedHours = projectViewModel?.EstimatedHours ?? 0,
+                EstimatedWeldingWire = projectViewModel?.EstimatedWeldingWire ?? 0,
+                UserMembers = new List<User>()
             };
+
+            project.UserMembers.Add(selectedUser);
 
             _projectRepository.Add(project);
             return RedirectToAction("Index");
