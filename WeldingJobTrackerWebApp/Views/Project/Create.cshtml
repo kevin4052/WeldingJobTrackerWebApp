@@ -7,6 +7,7 @@
 }
 
 <form method="post" asp-action="Create">
+    <input type="hidden" id="UserId" name="UserId" asp-for="UserId" />
     <div class="form-group">
         <label asp-for="Name">Name</label>
         <input asp-for="Name" type="text" class="form-control" aria-describedby="Project Name" placeholder="Project Name">

@@ -5,8 +5,9 @@ namespace WeldingJobTrackerWebApp.ViewModels
 {
     public class ProjectViewModel
     {
-        public int Id { get; set; } = 0;
+        public int Id { get; set; };
         public string Name { get; set; }
+        public string UserId { get; set; }
         public List<SelectListItem>? ProjectStatusSelectList { get; set; }
         public List<SelectListItem>? UserSelectList { get; set; }
         public List<SelectListItem>? ClientSelectList { get; set; }

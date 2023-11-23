@@ -26,14 +26,14 @@ namespace WeldingJobTrackerWebApp.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var clients = await _projectRepository.GetAll();
-            return View(clients);
+            var projects = await _projectRepository.GetAll();
+            return View(projects);
         }
 
         public async Task<IActionResult> Detail(int id)
         {
-            var client = await _projectRepository.GetByIdAsync(id);
-            return View(client);
+            var project = await _projectRepository.GetByIdAsync(id);
+            return View(project);
         }
 
         public async Task<IActionResult> Create() 
@@ -42,38 +42,39 @@ namespace WeldingJobTrackerWebApp.Controllers
             var userNameIds = await _userRepository.GetAllUsersNameId();
             var clients = await _clientRepository.GetAllClientNameId();
 
-            var viewModel = new ProjectViewModel();
+            var projectViewModel = new ProjectViewModel();
 
-            viewModel.ProjectStatusSelectList = new List<SelectListItem>();
+            projectViewModel.ProjectStatusSelectList = new List<SelectListItem>();
             foreach (var projectStatus in projectStatuses)
             {
-                viewModel.ProjectStatusSelectList.Add(new SelectListItem { 
+                projectViewModel.ProjectStatusSelectList.Add(new SelectListItem 
+                { 
                     Text = projectStatus.Name, 
                     Value = projectStatus.Code
                 });
             }
 
-            viewModel.UserSelectList = new List<SelectListItem>();
+            projectViewModel.UserSelectList = new List<SelectListItem>();
             foreach (var userNameId in userNameIds)
             {
-                viewModel.UserSelectList.Add(new SelectListItem
+                projectViewModel.UserSelectList.Add(new SelectListItem
                 {
                     Text = userNameId.Name,
                     Value = userNameId.Id
                 });
             }
 
-            viewModel.ClientSelectList = new List<SelectListItem>();
+            projectViewModel.ClientSelectList = new List<SelectListItem>();
             foreach (var client in clients)
             {
-                viewModel.ClientSelectList.Add(new SelectListItem
+                projectViewModel.ClientSelectList.Add(new SelectListItem
                 {
                     Text = client.Name,
                     Value = client.Id.ToString()
                 });
             }
 
-            return View(viewModel);
+            return View(projectViewModel);
         }
 
         [HttpPost]
