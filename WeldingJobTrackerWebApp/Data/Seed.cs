@@ -92,24 +92,6 @@ namespace WeldingJobTrackerWebApp.Data
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                context.Database.EnsureCreated();
-
-                if (!context.Companys.Any())
-                {
-                    context.Companys.AddRange(new List<Company>()
-                    {
-                        new Company()
-                        {
-                            Name = "Test LLC"
-                        }
-                    });
-
-                    await context.SaveChangesAsync();
-                }
-
-                var testCompany = await context.Companys.FirstOrDefaultAsync(c => c.Name == "Test LLC");
-
                 //Roles
                 var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
