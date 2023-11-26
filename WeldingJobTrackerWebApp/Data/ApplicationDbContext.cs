@@ -24,6 +24,12 @@ namespace WeldingJobTrackerWebApp.Data
                 .WithMany(u => u.Projects)
                 .UsingEntity(j => j.ToTable("ProjectUser"));
 
+            //builder.Entity<User>()
+            //    .HasMany(u => u.Projects)
+            //    .WithOne(p => p.CreatedBy)
+            //    .HasForeignKey(p => p.CreatedByUserId)
+            //    .IsRequired(true);
+
             base.OnModelCreating(builder);
         }
     }

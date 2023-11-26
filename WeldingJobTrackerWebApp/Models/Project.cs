@@ -25,5 +25,9 @@ namespace WeldingJobTrackerWebApp.Models
         public int EstimatedWeldingWire {  get; set; }
         public int TotalWeldingWire {  get; set; }
         public ICollection<User>? UserMembers { get; set; }
+        [ForeignKey("User")]
+        public string CreatedByUserId { get; set; }
+        [ForeignKey("User")]
+        public string ManagerUserId { get; set; }
     }
 }

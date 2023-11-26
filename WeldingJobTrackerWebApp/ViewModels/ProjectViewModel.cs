@@ -5,15 +5,16 @@ namespace WeldingJobTrackerWebApp.ViewModels
 {
     public class ProjectViewModel
     {
-        public int Id { get; set; };
+        public int Id { get; set; }
         public string Name { get; set; }
-        public string UserId { get; set; }
+        public string CreatedByUserId { get; set; }
         public List<SelectListItem>? ProjectStatusSelectList { get; set; }
         public List<SelectListItem>? UserSelectList { get; set; }
         public List<SelectListItem>? ClientSelectList { get; set; }
         public string SelectedProjectStatus {  get; set; }
         public string SelectedUser {  get; set; }
         public string SelectedClient {  get; set; }
+        public string SelectedManagerId { get; set; }
         public Client? Client { get; set; }
         public int Budget { get; set; } = 0;
         public int CostEstimate { get; set; } = 0;

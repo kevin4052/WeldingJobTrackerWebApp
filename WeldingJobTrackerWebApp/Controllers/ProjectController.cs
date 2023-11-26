@@ -12,17 +12,20 @@ namespace WeldingJobTrackerWebApp.Controllers
         private readonly IProjectStatusRepository _projectStatusRepository;
         private readonly IUserRepository _userRepository;
         private readonly IClientRepository _clientRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ProjectController(
             IProjectRepository projectRepository, 
             IProjectStatusRepository projectStatusRepository, 
             IUserRepository userRepository, 
-            IClientRepository clientRepository)
+            IClientRepository clientRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _projectRepository = projectRepository;
             _projectStatusRepository = projectStatusRepository;
             _userRepository = userRepository;
             _clientRepository = clientRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<IActionResult> Index()
         {
@@ -41,8 +44,10 @@ namespace WeldingJobTrackerWebApp.Controllers
             var projectStatuses = await _projectStatusRepository.GetAll();
             var userNameIds = await _userRepository.GetAllUsersNameId();
             var clients = await _clientRepository.GetAllClientNameId();
+            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
 
             var projectViewModel = new ProjectViewModel();
+            projectViewModel.CreatedByUserId = currentUserId;
 
             projectViewModel.ProjectStatusSelectList = new List<SelectListItem>();
             foreach (var projectStatus in projectStatuses)
@@ -103,7 +108,9 @@ namespace WeldingJobTrackerWebApp.Controllers
                 Rate = projectViewModel?.Rate ?? 0,
                 EstimatedHours = projectViewModel?.EstimatedHours ?? 0,
                 EstimatedWeldingWire = projectViewModel?.EstimatedWeldingWire ?? 0,
-                UserMembers = new List<User>()
+                UserMembers = new List<User>(),
+                CreatedByUserId = projectViewModel.CreatedByUserId,
+                ManagerUserId = projectViewModel.SelectedManagerId
             };
 
             project.UserMembers.Add(selectedUser);
