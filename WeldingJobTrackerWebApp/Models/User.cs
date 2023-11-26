@@ -10,6 +10,6 @@ namespace WeldingJobTrackerWebApp.Models
         public string LastName { get; set; }
         [ForeignKey("Address")] public int? AddressId { get; set; }
         public Address? Address { get; set; }
-        public ICollection<Project>? Projects { get; set; }
+        public ICollection<Company> Companies { get; set; }
     }
 }

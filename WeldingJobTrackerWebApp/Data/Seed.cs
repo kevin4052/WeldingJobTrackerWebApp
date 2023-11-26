@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data.Enum;
 using WeldingJobTrackerWebApp.Models;
 
@@ -51,7 +52,7 @@ namespace WeldingJobTrackerWebApp.Data
                     });
                     context.SaveChanges();
                 }
-                
+
                 if (!context.Clients.Any())
                 {
                     context.Clients.AddRange(new List<Client>()
@@ -84,31 +85,6 @@ namespace WeldingJobTrackerWebApp.Data
                     context.SaveChanges();
                 }
 
-                if (!context.Projects.Any())
-                {
-                    var projectStatusActive = context.ProjectStatuses.FirstOrDefault(p => p.Code == "Draft");
-                    var projectClient = context.Clients.FirstOrDefault(c => c.Name == "Test Client1");
-
-                    context.Projects.AddRange(new List<Project>()
-                    {
-                        new Project()
-                        {
-                            Name = "Test Project",
-                            ProjectStatus = projectStatusActive,
-                            Client = projectClient,
-                            Budget = 10000,
-                            CostEstimate = 4000,
-                            Notes = "test notes!",
-                            Description = "description of test project",
-                            StartDate = DateTime.Now,
-                            Rate = 150,
-                            EstimatedHours = 0,
-                            EstimatedWeldingWire = 1000,
-                        }
-                    });
-                    context.SaveChanges();
-                }
-
             }
         }
 
@@ -116,6 +92,24 @@ namespace WeldingJobTrackerWebApp.Data
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
+                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                context.Database.EnsureCreated();
+
+                if (!context.Companys.Any())
+                {
+                    context.Companys.AddRange(new List<Company>()
+                    {
+                        new Company()
+                        {
+                            Name = "Test LLC"
+                        }
+                    });
+
+                    await context.SaveChangesAsync();
+                }
+
+                var testCompany = await context.Companys.FirstOrDefaultAsync(c => c.Name == "Test LLC");
+
                 //Roles
                 var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -146,9 +140,20 @@ namespace WeldingJobTrackerWebApp.Data
                             City = "Austin",
                             State = State.TX,
                             PostalCode = "33333"
+                        },
+                        Companies = new List<Company>()
+                        {
+                            new Company()
+                            {
+                                Id = 1,
+                                Name = "Test LLC"
+                            }
                         }
                     };
-                    await userManager.CreateAsync(newAdminUser, "Coding@1234?");
+
+                    //newAdminUser.Companies.Add(testCompany);
+
+                    await userManager.CreateAsync(newAdminUser, "12QWas==");
                     await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
                 }
 
@@ -171,9 +176,19 @@ namespace WeldingJobTrackerWebApp.Data
                             City = "Charlotte",
                             State = State.AZ,
                             PostalCode = "33333"
+                        },
+                        Companies = new List<Company>()
+                        {
+                            new Company()
+                            {
+                                Id = 1,
+                                Name = "Test LLC"
+                            }
                         }
                     };
-                    await userManager.CreateAsync(newAppUser, "Coding@1234?");
+                    //newAppUser.Companies.Add(testCompany);
+
+                    await userManager.CreateAsync(newAppUser, "12QWas==");
                     await userManager.AddToRoleAsync(newAppUser, UserRoles.Welder);
                 }
             }

@@ -22,6 +22,21 @@ namespace WeldingJobTrackerWebApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Employees", b =>
+                {
+                    b.Property<int>("CompaniesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmployeesId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CompaniesId", "EmployeesId");
+
+                    b.HasIndex("EmployeesId");
+
+                    b.ToTable("Employees");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -155,21 +170,6 @@ namespace WeldingJobTrackerWebApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectUser", b =>
-                {
-                    b.Property<int>("ProjectsId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserMembersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ProjectsId", "UserMembersId");
-
-                    b.HasIndex("UserMembersId");
-
-                    b.ToTable("ProjectUser", (string)null);
-                });
-
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -232,6 +232,23 @@ namespace WeldingJobTrackerWebApp.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Company", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Companys");
+                });
+
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Image", b =>
                 {
                     b.Property<int>("Id")
@@ -261,62 +278,26 @@ namespace WeldingJobTrackerWebApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Budget")
+                    b.Property<int?>("CompanyId")
                         .HasColumnType("int");
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CostEstimate")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreatedByUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("EstimatedHours")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EstimatedWeldingWire")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ManagerUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ProjectStatusId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalWeldingWire")
-                        .HasColumnType("int");
-
-                    b.Property<int>("totalHours")
+                    b.Property<int>("TeamId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("ProjectStatusId");
+
+                    b.HasIndex("TeamId");
 
                     b.ToTable("Projects");
                 });
@@ -340,6 +321,73 @@ namespace WeldingJobTrackerWebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectStatuses");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Team", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.TeamMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TeamMembers");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.TeamRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeamRoles");
                 });
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.User", b =>
@@ -423,6 +471,21 @@ namespace WeldingJobTrackerWebApp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Employees", b =>
+                {
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompaniesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WeldingJobTrackerWebApp.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("EmployeesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -474,21 +537,6 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectUser", b =>
-                {
-                    b.HasOne("WeldingJobTrackerWebApp.Models.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WeldingJobTrackerWebApp.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserMembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Client", b =>
                 {
                     b.HasOne("WeldingJobTrackerWebApp.Models.Address", "Address")
@@ -508,11 +556,9 @@ namespace WeldingJobTrackerWebApp.Migrations
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Project", b =>
                 {
-                    b.HasOne("WeldingJobTrackerWebApp.Models.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Company", null)
+                        .WithMany("Projects")
+                        .HasForeignKey("CompanyId");
 
                     b.HasOne("WeldingJobTrackerWebApp.Models.ProjectStatus", "ProjectStatus")
                         .WithMany()
@@ -520,9 +566,42 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Client");
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Team", "Team")
+                        .WithMany("Projects")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ProjectStatus");
+
+                    b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.TeamMember", b =>
+                {
+                    b.HasOne("WeldingJobTrackerWebApp.Models.TeamRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Team", "Team")
+                        .WithMany("TeamMembers")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WeldingJobTrackerWebApp.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.User", b =>
@@ -532,6 +611,18 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .HasForeignKey("AddressId");
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Company", b =>
+                {
+                    b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Team", b =>
+                {
+                    b.Navigation("Projects");
+
+                    b.Navigation("TeamMembers");
                 });
 #pragma warning restore 612, 618
         }
