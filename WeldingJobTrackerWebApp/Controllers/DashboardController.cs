@@ -15,10 +15,13 @@ namespace WeldingJobTrackerWebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var projects = await _dashboardRepository.GetAllUserProjects();
+            //var projects = await _dashboardRepository.GetAllUserProjects();
+            var currentUser = await _dashboardRepository.GetCurrentUserAsync();
+
             var dashBoardViewModel = new DashboardViewModel
             {
-                Projects = projects,
+                //Projects = projects,
+                CurrentUser = currentUser
             };
 
             return View(dashBoardViewModel);

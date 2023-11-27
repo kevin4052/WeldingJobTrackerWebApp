@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WeldingJobTrackerWebApp.Interfaces;
+using WeldingJobTrackerWebApp.Models;
+using WeldingJobTrackerWebApp.ViewModels;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {
@@ -16,6 +18,32 @@ namespace WeldingJobTrackerWebApp.Controllers
         {
             var teams = await _teamRepository.GetAll();
             return View(teams);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(TeamViewModel teamViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "creating client failed");
+                return View(teamViewModel);
+            }
+
+            var team = new Team
+            {
+                Name = teamViewModel.Name,
+                Projects = teamViewModel.Projects,
+                TeamMembers = teamViewModel.TeamMembers,
+            };
+
+            _teamRepository.Add(team);
+
+            return RedirectToAction("Index");
         }
     }
 }

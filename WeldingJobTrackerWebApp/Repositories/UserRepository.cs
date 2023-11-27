@@ -31,10 +31,9 @@ namespace WeldingJobTrackerWebApp.Repositories
 
         public async Task<User> GetUserbyIdAsync(string id)
         {
-            //return await _context.Users
-            //    .Include(u => u.Projects)
-            //    .FirstOrDefaultAsync(u => u.Id == id);
-            throw new NotImplementedException();
+            return await _context.Users
+                .Include(u => u.Companies)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
     }
 }

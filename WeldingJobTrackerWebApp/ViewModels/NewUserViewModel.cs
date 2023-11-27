@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace WeldingJobTrackerWebApp.ViewModels
 {
-    public class RegisterViewModel
+    public class NewUserViewModel
     {
         [Display(Name = "Email address")]
         [Required(ErrorMessage = "Email address is required")]
@@ -17,6 +18,7 @@ namespace WeldingJobTrackerWebApp.ViewModels
         public string ConfirmPassword { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string? CompanyName { get; set; }
+        public string SelectedRole { get; set; }
+        public List<SelectListItem>? RoleSelectList { get; set; }
     }
 }

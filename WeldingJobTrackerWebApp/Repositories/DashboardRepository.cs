@@ -25,5 +25,12 @@ namespace WeldingJobTrackerWebApp.Repositories
 
             throw new NotImplementedException();
         }
+
+        public async Task<User> GetCurrentUserAsync()
+        {
+            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
+            var user = await _userRepository.GetUserbyIdAsync(currentUserId);
+            return user;
+        }
     }
 }

@@ -104,8 +104,8 @@ namespace WeldingJobTrackerWebApp.Data
 
                 //Users
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                var adminUserEmail = "cobra40@gmail.com";
 
+                var adminUserEmail = "cobra40@gmail.com";
                 var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
                 if (adminUser == null)
                 {
@@ -133,14 +133,11 @@ namespace WeldingJobTrackerWebApp.Data
                         }
                     };
 
-                    //newAdminUser.Companies.Add(testCompany);
-
                     await userManager.CreateAsync(newAdminUser, "12QWas==");
                     await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
                 }
 
                 var appUserEmail = "user@aws11.com";
-
                 var appUser = await userManager.FindByEmailAsync(appUserEmail);
                 if (appUser == null)
                 {
@@ -168,7 +165,6 @@ namespace WeldingJobTrackerWebApp.Data
                             }
                         }
                     };
-                    //newAppUser.Companies.Add(testCompany);
 
                     await userManager.CreateAsync(newAppUser, "12QWas==");
                     await userManager.AddToRoleAsync(newAppUser, UserRoles.Welder);
