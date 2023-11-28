@@ -25,9 +25,8 @@ namespace WeldingJobTrackerWebApp.Data
         {
 
             builder.Entity<User>()
-                .HasMany(u => u.Companies)
-                .WithMany(c => c.Employees)
-                .UsingEntity("Employees");
+                .HasOne(u => u.Company)
+                .WithMany(c => c.Employees);
 
             builder.Entity<Team>()
                 .HasMany(t => t.Projects)

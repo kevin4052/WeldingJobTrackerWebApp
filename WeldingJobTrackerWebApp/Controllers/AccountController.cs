@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
 using WeldingJobTrackerWebApp.Data;
+using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 using WeldingJobTrackerWebApp.ViewModels;
 
@@ -11,11 +13,22 @@ namespace WeldingJobTrackerWebApp.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IRoleRepository _roleRepository;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(
+            UserManager<User> userManager, 
+            SignInManager<User> signInManager, 
+            RoleManager<IdentityRole> roleManager,
+            IHttpContextAccessor httpContextAccessor, 
+            IRoleRepository roleRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
+            _httpContextAccessor = httpContextAccessor;
+            _roleRepository = roleRepository;
         }
 
         public IActionResult Login()
@@ -92,15 +105,10 @@ namespace WeldingJobTrackerWebApp.Controllers
 
             if (!registerViewModel.CompanyName.IsNullOrEmpty())
             {
-                var company = new List<Company>()
+                newUser.Company = new Company()
                 {
-                    new Company()
-                    {
-                        Name = registerViewModel.CompanyName,
-                    }
+                    Name = registerViewModel.CompanyName,
                 };
-
-                newUser.Companies = company;
             }
 
             var newUserResponce = await _userManager.CreateAsync(newUser, registerViewModel.Password);
@@ -124,9 +132,25 @@ namespace WeldingJobTrackerWebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddNewUser()
+        public async Task<IActionResult> AddNewUser()
         {
+            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
+            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var roles = await _roleRepository.GetAllSelectRoles();
+
             var newUserViewModel = new NewUserViewModel();
+            newUserViewModel.CompanyId = currentUser.CompanyId;
+
+            newUserViewModel.RoleSelectList = new List<SelectListItem>();
+            foreach (var role in roles)
+            {
+                newUserViewModel.RoleSelectList.Add(new SelectListItem
+                {
+                    Text = role.Name,
+                    Value = role.Id.ToString()
+                });
+            }
+
             return View(newUserViewModel);
         }
 
@@ -152,7 +176,7 @@ namespace WeldingJobTrackerWebApp.Controllers
                 LastName = newUserViewModel.LastName,
                 Email = newUserViewModel.EmailAddress,
                 UserName = newUserViewModel.EmailAddress,
-                Companies = new List<Company>()
+                CompanyId = newUserViewModel.CompanyId,
             };
 
             var newUserResponce = await _userManager.CreateAsync(newUser, newUserViewModel.Password);
@@ -163,7 +187,9 @@ namespace WeldingJobTrackerWebApp.Controllers
                 return View(newUserViewModel);
             }
 
-            await _userManager.AddToRoleAsync(newUser, UserRoles.User);
+            var selectedRole = _roleManager.Roles.FirstOrDefault(r => r.Id == newUserViewModel.SelectedRoleId);
+
+            await _userManager.AddToRoleAsync(newUser, selectedRole.Name);
 
             return RedirectToAction("Index", "Dashboard");
         }

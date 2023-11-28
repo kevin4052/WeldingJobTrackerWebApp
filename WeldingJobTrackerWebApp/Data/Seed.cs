@@ -92,6 +92,23 @@ namespace WeldingJobTrackerWebApp.Data
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
+                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                context.Database.EnsureCreated();
+
+                if (!context.Companys.Any())
+                {
+                    context.Companys.AddRange(new List<Company>()
+                    {
+                        new Company()
+                        {
+                            Name = "Test LLC"
+                        }
+                    });
+                    await context.SaveChangesAsync();
+                }
+
+                var seedCompany = context.Companys.FirstOrDefault(c => c.Name == "Test LLC");
+
                 //Roles
                 var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -123,14 +140,7 @@ namespace WeldingJobTrackerWebApp.Data
                             State = State.TX,
                             PostalCode = "33333"
                         },
-                        Companies = new List<Company>()
-                        {
-                            new Company()
-                            {
-                                Id = 1,
-                                Name = "Test LLC"
-                            }
-                        }
+                        Company = seedCompany
                     };
 
                     await userManager.CreateAsync(newAdminUser, "12QWas==");
@@ -156,14 +166,7 @@ namespace WeldingJobTrackerWebApp.Data
                             State = State.AZ,
                             PostalCode = "33333"
                         },
-                        Companies = new List<Company>()
-                        {
-                            new Company()
-                            {
-                                Id = 1,
-                                Name = "Test LLC"
-                            }
-                        }
+                        Company = seedCompany
                     };
 
                     await userManager.CreateAsync(newAppUser, "12QWas==");

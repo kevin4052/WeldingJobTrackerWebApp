@@ -22,21 +22,6 @@ namespace WeldingJobTrackerWebApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Employees", b =>
-                {
-                    b.Property<int>("CompaniesId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EmployeesId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CompaniesId", "EmployeesId");
-
-                    b.HasIndex("EmployeesId");
-
-                    b.ToTable("Employees");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -401,6 +386,9 @@ namespace WeldingJobTrackerWebApp.Migrations
                     b.Property<int?>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -460,6 +448,8 @@ namespace WeldingJobTrackerWebApp.Migrations
 
                     b.HasIndex("AddressId");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -469,21 +459,6 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Employees", b =>
-                {
-                    b.HasOne("WeldingJobTrackerWebApp.Models.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompaniesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WeldingJobTrackerWebApp.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("EmployeesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -610,11 +585,21 @@ namespace WeldingJobTrackerWebApp.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId");
 
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Company", "Company")
+                        .WithMany("Employees")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Company", b =>
                 {
+                    b.Navigation("Employees");
+
                     b.Navigation("Projects");
                 });
 

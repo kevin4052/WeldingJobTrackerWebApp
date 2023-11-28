@@ -32,7 +32,7 @@ namespace WeldingJobTrackerWebApp.Repositories
         public async Task<User> GetUserbyIdAsync(string id)
         {
             return await _context.Users
-                .Include(u => u.Companies)
+                .Include(u => u.Company)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
     }
