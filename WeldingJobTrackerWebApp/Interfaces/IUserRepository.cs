@@ -6,6 +6,6 @@ namespace WeldingJobTrackerWebApp.Interfaces
     public interface IUserRepository
     {
         Task<User> GetUserbyIdAsync(string id);
-        Task<IEnumerable<UserNameAndId>> GetAllUsersNameId();
+        Task<IEnumerable<UserRoleGroup>> GetSelectItems();
     }
 }

@@ -11,5 +11,7 @@ namespace WeldingJobTrackerWebApp.Models
         public ProjectStatus ProjectStatus { get; set; }
         [ForeignKey("Team")] public int TeamId { get; set; }
         public Team Team { get; set; }
+        [ForeignKey("Company")] public int CompanyId { get; set; }
+        public Company Company { get; set; }
     }
 }

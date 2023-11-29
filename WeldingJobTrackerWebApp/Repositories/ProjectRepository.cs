@@ -8,10 +8,56 @@ namespace WeldingJobTrackerWebApp.Repositories
     public class ProjectRepository : IProjectRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserRepository _userRepository;
 
-        public ProjectRepository(ApplicationDbContext context)
+        public ProjectRepository(
+            ApplicationDbContext context, 
+            IHttpContextAccessor httpContextAccessor, 
+            IUserRepository userRepository)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _userRepository = userRepository;
+        }
+
+        public class ProjectSelectItem
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        public async Task<IEnumerable<Project>> GetAll()
+        {
+            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
+            var user = await _userRepository.GetUserbyIdAsync(currentUserId);
+
+            return await _context.Projects
+                .Include(p => p.ProjectStatus)
+                .Where(p => p.CompanyId == user.CompanyId)
+                .ToListAsync();
+        }
+
+        public async Task<Project> GetByIdAsync(int id)
+        {
+            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
+            var user = await _userRepository.GetUserbyIdAsync(currentUserId);
+
+            var project = await _context.Projects
+                .Include(p => p.ProjectStatus)
+                .Where(p => p.CompanyId == user.CompanyId)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            return project!;
+        }        
+
+        public async Task<IEnumerable<ProjectSelectItem>> GetSelectItems()
+        {
+            var projects = await _context.Projects
+                .Select(p => new ProjectSelectItem { Id = p.Id, Name = p.Name})
+                .OrderBy(p => p.Name)
+                .ToListAsync();
+            return projects;
         }
 
         public bool Add(Project project)
@@ -24,28 +70,6 @@ namespace WeldingJobTrackerWebApp.Repositories
         {
             _context.Remove(project);
             return Save();
-        }
-
-        public async Task<IEnumerable<Project>> GetAll()
-        {
-            //return await _context.Projects
-            //    .Include(p => p.Client)
-            //    .Include(p => p.ProjectStatus)
-            //    .Include(p => p.UserMembers)
-            //    .ToListAsync();
-            throw new NotImplementedException();
-        }
-
-        public async Task<Project> GetByIdAsync(int id)
-        {
-            //var project = await _context.Projects
-            //    .Include(p => p.Client)
-            //    .Include(p => p.ProjectStatus)
-            //    .Include(p => p.UserMembers)
-            //    .FirstOrDefaultAsync(p => p.Id == id);
-
-            //return project!;
-            throw new NotImplementedException();
         }
 
         public bool Save()
