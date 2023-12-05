@@ -2,7 +2,7 @@
 
 namespace WeldingJobTrackerWebApp.Models.ViewModels.ViewTeam
 {
-    public class TeamViewModel
+    public class CreateTeamViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

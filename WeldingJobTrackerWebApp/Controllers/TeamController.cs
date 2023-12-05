@@ -45,7 +45,7 @@ namespace WeldingJobTrackerWebApp.Controllers
             var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
             var currentUser = await _userManager.FindByIdAsync(currentUserId);
 
-            var teamViewModel = new TeamViewModel()
+            var teamViewModel = new CreateTeamViewModel()
             {
                 CompanyId = currentUser.CompanyId,
                 ProjectSelectList = new List<SelectListItem>(),
@@ -77,7 +77,7 @@ namespace WeldingJobTrackerWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(TeamViewModel teamViewModel)
+        public async Task<IActionResult> Create(CreateTeamViewModel teamViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -116,9 +116,12 @@ namespace WeldingJobTrackerWebApp.Controllers
         {
             var team = await _teamRepository.GetByIdAsync(id);
 
-            var teamViewModel = new TeamViewModel
+            var teamViewModel = new DetailTeamViewModel
             {
+                Id = id,
                 Name = team.Name,
+                Admin = team.TeamMembers.FirstOrDefault(tm => tm.Role.Code == "ProjectManager").User,
+                Welder = team.TeamMembers.FirstOrDefault(tm => tm.Role.Code == "Labor").User
             };
 
             return View(teamViewModel);
