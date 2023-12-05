@@ -5,6 +5,5 @@ namespace WeldingJobTrackerWebApp.Interfaces
     public interface IDashboardRepository
     {
         Task<List<Project>> GetAllUserProjects();
-        Task<User> GetCurrentUserAsync();
     }
 }

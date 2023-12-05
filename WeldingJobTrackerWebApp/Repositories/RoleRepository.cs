@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 
@@ -13,17 +14,11 @@ namespace WeldingJobTrackerWebApp.Repositories
             _context = applicationDbContext;
         }
 
-        public class SelectRoles
-        {
-            public string Id { get; set; }
-            public string Name { get; set; }
-        }
-
-        public async Task<IEnumerable<SelectRoles>> GetAllSelectRoles()
+        public async Task<List<SelectListItem>> GetAllSelectRoles()
         {
             var roles = await _context.Roles
-                .Select(x => new SelectRoles { Id = x.Id, Name = x.Name })
-                .OrderBy(x => x.Name)
+                .Select(x => new SelectListItem { Value = x.Id, Text = x.Name })
+                .OrderBy(x => x.Text)
                 .ToListAsync();
 
             return roles;

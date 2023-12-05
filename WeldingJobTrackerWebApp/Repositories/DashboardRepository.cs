@@ -1,4 +1,5 @@
-﻿using WeldingJobTrackerWebApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 
@@ -7,30 +8,25 @@ namespace WeldingJobTrackerWebApp.Repositories
     public class DashboardRepository : IDashboardRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserRepository _userRepository;
 
-        public DashboardRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository) 
+        public DashboardRepository(ApplicationDbContext context, IUserRepository userRepository) 
         { 
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _userRepository = userRepository;
         }
 
         public async Task<List<Project>> GetAllUserProjects()
         {
-            //var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
-            //var user = await _userRepository.GetUserbyIdAsync(currentUserId);
-            //return user.Projects.ToList();
+            var userId = _userRepository.GetCurrentUserId();
+            var projects = await _context.Projects
+                .Include(p => p.Team)
+                .ThenInclude(
+                    team => team.TeamMembers
+                        .Where(teamMember => teamMember.UserId == userId)
+                ).ToListAsync();
 
-            throw new NotImplementedException();
-        }
-
-        public async Task<User> GetCurrentUserAsync()
-        {
-            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
-            var user = await _userRepository.GetUserbyIdAsync(currentUserId);
-            return user;
+            return projects;
         }
     }
 }

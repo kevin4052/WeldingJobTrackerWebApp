@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
@@ -14,21 +13,27 @@ namespace WeldingJobTrackerWebApp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserRepository _userRepository;
+        private readonly IProjectRepository _projectRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly ITeamRepository _teamRepository;
 
         public AccountController(
             UserManager<User> userManager, 
             SignInManager<User> signInManager, 
             RoleManager<IdentityRole> roleManager,
-            IHttpContextAccessor httpContextAccessor, 
-            IRoleRepository roleRepository)
+            IUserRepository userRepository, 
+            IProjectRepository projectRepository,
+            IRoleRepository roleRepository,
+            ITeamRepository teamRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-            _httpContextAccessor = httpContextAccessor;
+            _userRepository = userRepository;
+            _projectRepository = projectRepository;
             _roleRepository = roleRepository;
+            _teamRepository = teamRepository;
         }
 
         public IActionResult Login()
@@ -134,22 +139,14 @@ namespace WeldingJobTrackerWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> AddNewUser()
         {
-            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
-            var currentUser = await _userManager.FindByIdAsync(currentUserId);
-            var roles = await _roleRepository.GetAllSelectRoles();
+            var currentUser = await _userRepository.GetCurrentUserAsync();
+            var roleSelectItems = await _roleRepository.GetAllSelectRoles();
 
-            var newUserViewModel = new NewUserViewModel();
-            newUserViewModel.CompanyId = currentUser.CompanyId;
-
-            newUserViewModel.RoleSelectList = new List<SelectListItem>();
-            foreach (var role in roles)
+            var newUserViewModel = new NewUserViewModel()
             {
-                newUserViewModel.RoleSelectList.Add(new SelectListItem
-                {
-                    Text = role.Name,
-                    Value = role.Id.ToString()
-                });
-            }
+                CompanyId = currentUser.CompanyId,
+                RoleSelectList = roleSelectItems,
+            };
 
             return View(newUserViewModel);
         }
@@ -192,6 +189,28 @@ namespace WeldingJobTrackerWebApp.Controllers
             await _userManager.AddToRoleAsync(newUser, selectedRole.Name);
 
             return RedirectToAction("Index", "Dashboard");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(string id)
+        {
+            var user = await _userRepository.GetUserbyIdAsync(id);
+            var teams = await _teamRepository.GetUserTeams(user.Id);
+            var projects = await _projectRepository.GetUserProjects(user.Id);
+
+            var accountViewModal = new DetailAccountViewModal
+            {
+                Id = id,
+                Company = user.Company,
+                Address = user.Address,
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName= user.LastName,
+                Teams = teams.ToList(),
+                Projects = projects.ToList(),
+            };
+
+            return View(accountViewModal);
         }
     }
 }

@@ -48,6 +48,16 @@ namespace WeldingJobTrackerWebApp.Repositories
             return projects;
         }
 
+        public async Task<IEnumerable<Project>> GetUserProjects(string id)
+        {
+            var userProjects = await _context.Projects
+                .Include(p => p.Team)
+                    .ThenInclude(team => team.TeamMembers.Where(teamMember => teamMember.UserId == id))
+                .ToListAsync();
+
+            return userProjects;
+        }
+
         public bool Add(Project project)
         {
             _context.Add(project);

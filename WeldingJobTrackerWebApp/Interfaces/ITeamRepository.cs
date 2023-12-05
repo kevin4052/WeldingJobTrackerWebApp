@@ -7,6 +7,7 @@ namespace WeldingJobTrackerWebApp.Interfaces
     {
         Task<Team> GetByIdAsync(int id);
         Task<IEnumerable<Team>> GetAll();
+        Task<IEnumerable<Team>> GetUserTeams(string id);
         Task<IEnumerable<SelectListItem>> GetSelectItems();
         bool Add(Team team);
         bool Update(Team team);

@@ -30,6 +30,7 @@ namespace WeldingJobTrackerWebApp.Repositories
         {
             return _httpContextAccessor.HttpContext?.User?.GetUserId();
         }
+
         public async Task<User> GetCurrentUserAsync()
         {
             var currentUserId = this.GetCurrentUserId();
@@ -66,7 +67,7 @@ namespace WeldingJobTrackerWebApp.Repositories
             {
                 if ( user.Role == "admin" ) 
                 {
-                    adminList.Users.Add(new SelectListItem { Value = user.Id, Text = user.Name});
+                    adminList.Users.Add(new SelectListItem { Value = user.Id, Text = user.Name });
                 }
 
                 if (user.Role == "welder")

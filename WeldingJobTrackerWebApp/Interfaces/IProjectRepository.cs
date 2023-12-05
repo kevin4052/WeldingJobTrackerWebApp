@@ -6,6 +6,7 @@ namespace WeldingJobTrackerWebApp.Interfaces
     public interface IProjectRepository
     {
         Task<IEnumerable<Project>> GetAll();
+        Task<IEnumerable<Project>> GetUserProjects(string id);
         Task<IEnumerable<SelectListItem>> GetSelectItems();
         Task<Project> GetByIdAsync(int id);
         bool Add(Project project);
