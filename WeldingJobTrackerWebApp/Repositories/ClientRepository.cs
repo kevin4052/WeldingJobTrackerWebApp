@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
@@ -13,11 +14,6 @@ namespace WeldingJobTrackerWebApp.Repositories
         public ClientRepository(ApplicationDbContext context)
         {
             _context = context;
-        }
-        public class ClientNameId
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
         }
 
         public bool Add(Client client)
@@ -40,11 +36,11 @@ namespace WeldingJobTrackerWebApp.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ClientNameId>> GetAllClientNameId()
+        public async Task<IEnumerable<SelectListItem>> GetSelectItems()
         {
             var clients = await _context.Clients
-                .Select(u => new ClientNameId { Id = u.Id, Name = u.Name })
-                .OrderBy(u => u.Name)
+                .Select(u => new SelectListItem { Value = u.Id.ToString(), Text = u.Name })
+                .OrderBy(u => u.Text)
                 .ToListAsync();
             return clients;
         }

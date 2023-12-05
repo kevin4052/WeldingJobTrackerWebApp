@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
@@ -8,29 +9,17 @@ namespace WeldingJobTrackerWebApp.Repositories
     public class ProjectRepository : IProjectRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserRepository _userRepository;
 
-        public ProjectRepository(
-            ApplicationDbContext context, 
-            IHttpContextAccessor httpContextAccessor, 
-            IUserRepository userRepository)
+        public ProjectRepository(ApplicationDbContext context, IUserRepository userRepository)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _userRepository = userRepository;
-        }
-
-        public class ProjectSelectItem
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
         }
 
         public async Task<IEnumerable<Project>> GetAll()
         {
-            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
-            var user = await _userRepository.GetUserbyIdAsync(currentUserId);
+            var user = await _userRepository.GetCurrentUserAsync();
 
             return await _context.Projects
                 .Include(p => p.ProjectStatus)
@@ -40,8 +29,7 @@ namespace WeldingJobTrackerWebApp.Repositories
 
         public async Task<Project> GetByIdAsync(int id)
         {
-            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
-            var user = await _userRepository.GetUserbyIdAsync(currentUserId);
+            var user = await _userRepository.GetCurrentUserAsync();
 
             var project = await _context.Projects
                 .Include(p => p.ProjectStatus)
@@ -51,11 +39,11 @@ namespace WeldingJobTrackerWebApp.Repositories
             return project!;
         }        
 
-        public async Task<IEnumerable<ProjectSelectItem>> GetSelectItems()
+        public async Task<IEnumerable<SelectListItem>> GetSelectItems()
         {
             var projects = await _context.Projects
-                .Select(p => new ProjectSelectItem { Id = p.Id, Name = p.Name})
-                .OrderBy(p => p.Name)
+                .Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name})
+                .OrderBy(p => p.Text)
                 .ToListAsync();
             return projects;
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
@@ -16,6 +17,17 @@ namespace WeldingJobTrackerWebApp.Repositories
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task<Team> GetByIdAsync(int id)
+        {
+            return await _context.Teams
+                .Include(team => team.Projects)
+                .Include(team => team.TeamMembers)
+                    .ThenInclude(teamMember => teamMember.User)
+                .Include(team => team.TeamMembers)
+                    .ThenInclude(teamMember => teamMember.Role)
+                .FirstOrDefaultAsync(team => team.Id == id);
+        }
+
         public async Task<IEnumerable<Team>> GetAll()
         {
             var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
@@ -27,15 +39,13 @@ namespace WeldingJobTrackerWebApp.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Team> GetByIdAsync(int id)
+        public async Task<IEnumerable<SelectListItem>> GetSelectItems()
         {
-            return await _context.Teams
-                .Include(team => team.Projects)
-                .Include(team => team.TeamMembers)
-                    .ThenInclude(teamMember => teamMember.User)
-                .Include(team => team.TeamMembers)
-                    .ThenInclude(teamMember => teamMember.Role)
-                .FirstOrDefaultAsync(team => team.Id == id);
+            var teams = await _context.Teams
+                .Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name })
+                .OrderBy(p => p.Text)
+                .ToListAsync();
+            return teams;
         }
 
         public bool Add(Team team)
@@ -60,6 +70,6 @@ namespace WeldingJobTrackerWebApp.Repositories
         {
             _context.Update(team);
             return Save();
-        }
+        }        
     }
 }

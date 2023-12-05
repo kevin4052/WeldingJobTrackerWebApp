@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 using WeldingJobTrackerWebApp.Models.ViewModels.ViewTeam;
@@ -13,23 +11,17 @@ namespace WeldingJobTrackerWebApp.Controllers
         private readonly ITeamRoleRepository _teamRoleRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly UserManager<User> _userManager;
 
         public TeamController(
             ITeamRepository teamRepository, 
             ITeamRoleRepository teamRoleRepository,
             IProjectRepository projectRepository, 
-            IUserRepository userRepository,
-            IHttpContextAccessor httpContextAccessor,
-            UserManager<User> userManager)
+            IUserRepository userRepository)
         {
             _teamRepository = teamRepository;
             _teamRoleRepository = teamRoleRepository;
             _projectRepository = projectRepository;
             _userRepository = userRepository;
-            _httpContextAccessor = httpContextAccessor;
-            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -42,36 +34,15 @@ namespace WeldingJobTrackerWebApp.Controllers
         {
             var projectSelectList = await _projectRepository.GetSelectItems();
             var userSelectGroups = await _userRepository.GetSelectItems();
-            var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
-            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var currentUser = await _userRepository.GetCurrentUserAsync();
 
             var teamViewModel = new CreateTeamViewModel()
             {
                 CompanyId = currentUser.CompanyId,
-                ProjectSelectList = new List<SelectListItem>(),
-                AdminSelectList = new List<SelectListItem>(),
-                WelderSelectList = new List<SelectListItem>(),
+                ProjectSelectList = projectSelectList.ToList(),
+                AdminSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "admin").Users,
+                WelderSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "welder").Users,
             };
-
-            foreach (var project in projectSelectList)
-            {
-                teamViewModel.ProjectSelectList.Add(new SelectListItem
-                {
-                    Text = project.Name,
-                    Value = project.Id.ToString()
-                });
-            }
-
-            foreach (var userListGroup in userSelectGroups) 
-            { 
-                if (userListGroup.Role == "welder")
-                {
-                    teamViewModel.WelderSelectList.AddRange(userListGroup.Users);
-                } else
-                {
-                    teamViewModel.AdminSelectList.AddRange(userListGroup.Users);
-                }
-            }
 
             return View(teamViewModel);
         }

@@ -10,10 +10,14 @@ namespace WeldingJobTrackerWebApp.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<User> _userManager;
 
-        public UserRepository(ApplicationDbContext applicationDbContext)
+        public UserRepository(ApplicationDbContext applicationDbContext, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
         {
             _context = applicationDbContext;
+            _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
         public class UserRoleGroup
@@ -22,15 +26,19 @@ namespace WeldingJobTrackerWebApp.Repositories
             public List<SelectListItem> Users { get; set; }
         }
 
-        public class UserSelectItem
+        public string GetCurrentUserId()
         {
-            public string Id { get; set; }  
-            public string Name { get; set; }
+            return _httpContextAccessor.HttpContext?.User?.GetUserId();
+        }
+        public async Task<User> GetCurrentUserAsync()
+        {
+            var currentUserId = this.GetCurrentUserId();
+            return await _userManager.FindByIdAsync(currentUserId);
         }
 
         public async Task<IEnumerable<UserRoleGroup>> GetSelectItems()
         {
-            var userSelectList = (
+            var userSelectList = await (
                 from user in _context.Users
                 join userRole in _context.UserRoles on user.Id equals userRole.UserId
                 join role in _context.Roles on userRole.RoleId equals role.Id
@@ -40,18 +48,14 @@ namespace WeldingJobTrackerWebApp.Repositories
                     Name = user.LastName + ", " + user.FirstName,
                     Role = role.Name,
                 }
-            );
+            ).ToListAsync();
 
             var adminList = new UserRoleGroup()
             {
                 Role = "admin",
                 Users = new List<SelectListItem>()
             };
-            var userList = new UserRoleGroup()
-            {
-                Role = "user",
-                Users = new List<SelectListItem>()
-            };
+
             var welderList = new UserRoleGroup()
             {
                 Role = "welder",
@@ -64,10 +68,7 @@ namespace WeldingJobTrackerWebApp.Repositories
                 {
                     adminList.Users.Add(new SelectListItem { Value = user.Id, Text = user.Name});
                 }
-                if (user.Role == "user")
-                {
-                    userList.Users.Add(new SelectListItem { Value = user.Id, Text = user.Name });
-                }
+
                 if (user.Role == "welder")
                 {
                     welderList.Users.Add(new SelectListItem { Value = user.Id, Text = user.Name });
@@ -77,7 +78,6 @@ namespace WeldingJobTrackerWebApp.Repositories
             var userRoleList = new List<UserRoleGroup>()
             {
                 adminList,
-                userList,
                 welderList
             };
 
@@ -90,5 +90,6 @@ namespace WeldingJobTrackerWebApp.Repositories
                 .Include(u => u.Company)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
+        
     }
 }

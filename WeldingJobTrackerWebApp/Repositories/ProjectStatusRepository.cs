@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
@@ -44,6 +44,15 @@ namespace WeldingJobTrackerWebApp.Repositories
             var projectStatus = await _context.ProjectStatuses.FirstOrDefaultAsync(ps => ps.Code == code);
 
             return projectStatus!;
+        }
+
+        public async Task<IEnumerable<SelectListItem>> GetSelectItems()
+        {
+            var projectStatuses = await _context.ProjectStatuses
+                .Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name })
+                .OrderBy(p => p.Text)
+                .ToListAsync();
+            return projectStatuses;
         }
 
         public bool Save()

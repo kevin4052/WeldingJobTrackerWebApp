@@ -1,5 +1,5 @@
 ﻿@using WeldingJobTrackerWebApp.Models.ViewModels.ViewProject;
-@model ProjectViewModel
+@model CreateProjectViewModel
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -7,61 +7,21 @@
 }
 
 <form method="post" asp-action="Create">
-    <input type="hidden" id="UserId" name="CreatedByUserId" asp-for="CreatedByUserId" />
+    <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
     <div class="form-group">
         <label asp-for="Name">Name</label>
         <input asp-for="Name" type="text" class="form-control" aria-describedby="Project Name" placeholder="Project Name">
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="SelectedClient">Client</label>
-        <select asp-for="SelectedClient" class="form-control" asp-items="Model.ClientSelectList"></select>
-        <span asp-validation-for="SelectedClient" class="text-danger"></span>
+        <label asp-for="SelectedProjectStatusId">Project State</label>
+        <select asp-for="SelectedProjectStatusId" class="form-control" asp-items="Model.ProjectStatusSelectList"></select>
+        <span asp-validation-for="SelectedProjectStatusId" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="SelectedProjectStatus">Project State</label>
-        <select asp-for="SelectedProjectStatus" class="form-control" asp-items="Model.ProjectStatusSelectList"></select>
-        <span asp-validation-for="SelectedProjectStatus" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="SelectedManagerId">Project Manager</label>
-        <select asp-for="SelectedManagerId" class="form-control" asp-items="Model.UserSelectList"></select>
-        <span asp-validation-for="SelectedManagerId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="SelectedUser">Welder</label>
-        <select asp-for="SelectedUser" class="form-control" asp-items="Model.UserSelectList"></select>
-        <span asp-validation-for="SelectedUser" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Description">Description</label>
-        <input asp-for="Description" type="text" class="form-control" aria-describedby="Description" placeholder="Description">
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Budget">Budget</label>
-        <input asp-for="Budget" type="number" class="form-control" aria-describedby="Budget" placeholder="Budget">
-        <span asp-validation-for="Budget" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="CostEstimate">CostEstimate</label>
-        <input asp-for="CostEstimate" type="text" class="form-control" aria-describedby="CostEstimate" placeholder="CostEstimate">
-        <span asp-validation-for="CostEstimate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="StartDate">StartDate</label>
-        <input asp-for="StartDate" type="date" class="form-control" aria-describedby="StartDate" placeholder="StartDate">
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Rate">Project Rate</label>
-        <input asp-for="Rate" type="text" class="form-control" aria-describedby="Project Rate" placeholder="Project Rate">
-        <span asp-validation-for="Rate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="EstimatedHours">Estimated Hours</label>
-        <input asp-for="EstimatedHours" type="number" class="form-control" aria-describedby="Estimated Hours" placeholder="Estimated Hours">
-        <span asp-validation-for="EstimatedHours" class="text-danger"></span>
+        <label asp-for="SelectedTeamId">Team</label>
+        <select asp-for="SelectedTeamId" class="form-control" asp-items="Model.TeamSelectList"></select>
+        <span asp-validation-for="SelectedTeamId" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>
