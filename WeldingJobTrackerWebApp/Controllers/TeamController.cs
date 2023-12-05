@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
-using WeldingJobTrackerWebApp.ViewModels;
+using WeldingJobTrackerWebApp.Models.ViewModels.ViewTeam;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {
     public class TeamController : Controller
     {
         private readonly ITeamRepository _teamRepository;
+        private readonly ITeamRoleRepository _teamRoleRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly IUserRepository _userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -18,12 +18,14 @@ namespace WeldingJobTrackerWebApp.Controllers
 
         public TeamController(
             ITeamRepository teamRepository, 
+            ITeamRoleRepository teamRoleRepository,
             IProjectRepository projectRepository, 
             IUserRepository userRepository,
             IHttpContextAccessor httpContextAccessor,
             UserManager<User> userManager)
         {
             _teamRepository = teamRepository;
+            _teamRoleRepository = teamRoleRepository;
             _projectRepository = projectRepository;
             _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
@@ -83,16 +85,43 @@ namespace WeldingJobTrackerWebApp.Controllers
                 return View(teamViewModel);
             }
 
+            var teamRoles = await _teamRoleRepository.GetTeamRolesAsync();
+
             var team = new Team
             {
                 Name = teamViewModel.Name,
                 Projects = new List<Project>(),
-                TeamMembers = new List<TeamMember>(),
+                TeamMembers = new List<TeamMember>()
+                {
+                    new TeamMember
+                    {
+                        UserId = teamViewModel.SelectedWelderId,
+                        RoleId = teamRoles.FirstOrDefault(r => r.Code == "Labor").Id
+                    },
+                    new TeamMember
+                    {
+                        UserId = teamViewModel.SelectedAdminId,
+                        RoleId = teamRoles.FirstOrDefault(r => r.Code == "ProjectManager").Id
+                    }
+                },
             };
 
             _teamRepository.Add(team);
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(int id)
+        {
+            var team = await _teamRepository.GetByIdAsync(id);
+
+            var teamViewModel = new TeamViewModel
+            {
+                Name = team.Name
+            };
+
+            return View(teamViewModel);
         }
     }
 }

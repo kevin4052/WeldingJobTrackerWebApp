@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
-using WeldingJobTrackerWebApp.ViewModels;
+using WeldingJobTrackerWebApp.Models.ViewModels.ViewClient;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {

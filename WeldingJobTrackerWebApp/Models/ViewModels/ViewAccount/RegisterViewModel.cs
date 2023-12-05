@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WeldingJobTrackerWebApp.ViewModels
+namespace WeldingJobTrackerWebApp.Models.ViewModels.ViewAccount
 {
     public class RegisterViewModel
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
-using WeldingJobTrackerWebApp.ViewModels;
+using WeldingJobTrackerWebApp.Models.ViewModels.ViewProject;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {

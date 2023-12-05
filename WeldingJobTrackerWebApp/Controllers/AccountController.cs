@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
-using WeldingJobTrackerWebApp.ViewModels;
+using WeldingJobTrackerWebApp.Models.ViewModels.ViewAccount;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {

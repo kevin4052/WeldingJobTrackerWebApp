@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using WeldingJobTrackerWebApp.Models;
 
-namespace WeldingJobTrackerWebApp.ViewModels
+namespace WeldingJobTrackerWebApp.Models.ViewModels.ViewTeam
 {
     public class TeamViewModel
     {
@@ -12,7 +11,7 @@ namespace WeldingJobTrackerWebApp.ViewModels
         public List<SelectListItem> WelderSelectList { get; set; }
         public List<SelectListItem> AdminSelectList { get; set; }
         public int SelectedProjectId { get; set; }
-        public int SelectedWelderId { get; set;}
-        public int SelectedAdminId { get; set; }
+        public string SelectedWelderId { get; set; }
+        public string SelectedAdminId { get; set; }
     }
 }

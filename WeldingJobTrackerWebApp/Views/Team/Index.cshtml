@@ -9,6 +9,8 @@
 <ul>
     @foreach(var team in Model)
     {
-        <li>team.Name</li>
+        <li>
+            <a asp-controller="Team" asp-action="Detail" asp-route-id="@team?.Id" type="button" class="btn btn-primary">@team.Name</a>
+        </li>
     }
 </ul>

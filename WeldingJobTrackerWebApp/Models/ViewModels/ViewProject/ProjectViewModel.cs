@@ -1,7 +1,6 @@
-﻿using WeldingJobTrackerWebApp.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace WeldingJobTrackerWebApp.ViewModels
+namespace WeldingJobTrackerWebApp.Models.ViewModels.ViewProject
 {
     public class ProjectViewModel
     {
@@ -11,9 +10,9 @@ namespace WeldingJobTrackerWebApp.ViewModels
         public List<SelectListItem>? ProjectStatusSelectList { get; set; }
         public List<SelectListItem>? UserSelectList { get; set; }
         public List<SelectListItem>? ClientSelectList { get; set; }
-        public string SelectedProjectStatus {  get; set; }
-        public string SelectedUser {  get; set; }
-        public string SelectedClient {  get; set; }
+        public string SelectedProjectStatus { get; set; }
+        public string SelectedUser { get; set; }
+        public string SelectedClient { get; set; }
         public string SelectedManagerId { get; set; }
         public Client? Client { get; set; }
         public int Budget { get; set; } = 0;

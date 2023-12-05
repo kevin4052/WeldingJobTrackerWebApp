@@ -74,10 +74,12 @@ namespace WeldingJobTrackerWebApp.Repositories
                 }
             }
 
-            var userRoleList = new List<UserRoleGroup>();
-            userRoleList.Add(adminList);
-            userRoleList.Add(userList);
-            userRoleList.Add(welderList);
+            var userRoleList = new List<UserRoleGroup>()
+            {
+                adminList,
+                userList,
+                welderList
+            };
 
             return userRoleList;
         }

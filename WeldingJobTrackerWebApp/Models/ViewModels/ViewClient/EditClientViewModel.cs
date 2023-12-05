@@ -1,6 +1,6 @@
 ﻿using WeldingJobTrackerWebApp.Models;
 
-namespace WeldingJobTrackerWebApp.ViewModels
+namespace WeldingJobTrackerWebApp.Models.ViewModels.ViewClient
 {
     public class EditClientViewModel
     {

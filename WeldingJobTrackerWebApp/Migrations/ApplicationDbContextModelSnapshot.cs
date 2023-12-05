@@ -316,11 +316,16 @@ namespace WeldingJobTrackerWebApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Teams");
                 });
@@ -554,6 +559,17 @@ namespace WeldingJobTrackerWebApp.Migrations
                     b.Navigation("ProjectStatus");
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("WeldingJobTrackerWebApp.Models.Team", b =>
+                {
+                    b.HasOne("WeldingJobTrackerWebApp.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("WeldingJobTrackerWebApp.Models.TeamMember", b =>

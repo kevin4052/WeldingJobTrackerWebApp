@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WeldingJobTrackerWebApp.Interfaces;
-using WeldingJobTrackerWebApp.ViewModels;
+using WeldingJobTrackerWebApp.Models.ViewModels.ViewDashboard;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {

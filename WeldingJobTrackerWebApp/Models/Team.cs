@@ -1,4 +1,6 @@
-﻿namespace WeldingJobTrackerWebApp.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WeldingJobTrackerWebApp.Models
 {
     public class Team
     {
