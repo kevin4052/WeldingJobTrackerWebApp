@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Data;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
@@ -22,17 +21,21 @@ namespace WeldingJobTrackerWebApp.Repositories
             var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();
 
             return await _context.Teams
-                .Include(t => t.TeamMembers)
-                .Include(t => t.Projects)
+                .Include(team => team.Projects)
+                .Include(team => team.TeamMembers)
+                .Include(team => team.TeamMembers)
                 .ToListAsync();
         }
 
         public async Task<Team> GetByIdAsync(int id)
         {
             return await _context.Teams
-                .Include(t => t.TeamMembers)
-                .Include(t => t.Projects)
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .Include(team => team.Projects)
+                .Include(team => team.TeamMembers)
+                    .ThenInclude(teamMember => teamMember.User)
+                .Include(team => team.TeamMembers)
+                    .ThenInclude(teamMember => teamMember.Role)
+                .FirstOrDefaultAsync(team => team.Id == id);
         }
 
         public bool Add(Team team)

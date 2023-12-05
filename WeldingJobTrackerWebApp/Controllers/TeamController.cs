@@ -118,7 +118,7 @@ namespace WeldingJobTrackerWebApp.Controllers
 
             var teamViewModel = new TeamViewModel
             {
-                Name = team.Name
+                Name = team.Name,
             };
 
             return View(teamViewModel);
