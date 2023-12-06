@@ -8,11 +8,11 @@
 }
 
 <h1 class="display-4 fw-normal">User Dashboard</h1>
-<a type="button" class="btn btn-primary" asp-area="" asp-controller="Project" asp-action="Create">Create Project</a>
-<a type="button" class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="EditUserProfile">Edit User Profile</a>
-<a type="button" class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="AddNewUser">Add new account</a>
-<a type="button" class="btn btn-primary" asp-area="" asp-controller="Team" asp-action="Create">Create a new Team</a>
-<a type="button" class="btn btn-primary" asp-area="" asp-controller="Project" asp-action="Create">Create a Project</a>
+<a type="button" class="btn btn-primary" asp-controller="Project" asp-action="Create">Create Project</a>
+<a type="button" class="btn btn-primary" asp-controller="Account" asp-route-id="@Model.CurrentUser.Id" asp-action="Details">Edit User Profile</a>
+<a type="button" class="btn btn-primary" asp-controller="Account" asp-action="AddNewUser">Add new account</a>
+<a type="button" class="btn btn-primary" asp-controller="Team" asp-action="Create">Create a new Team</a>
+<a type="button" class="btn btn-primary" asp-controller="Project" asp-action="Create">Create a Project</a>
 
 <div class="album py-5 bg-light">
     <div class="container">

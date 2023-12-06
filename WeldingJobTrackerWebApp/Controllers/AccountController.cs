@@ -201,16 +201,24 @@ namespace WeldingJobTrackerWebApp.Controllers
             var accountViewModal = new DetailAccountViewModal
             {
                 Id = id,
-                Company = user.Company,
+                CompanyId = user.Company.Id,
+                CompanyName = user.Company.Name,
                 Address = user.Address,
                 FirstName = user.FirstName,
                 MiddleName = user.MiddleName,
                 LastName= user.LastName,
+                EmailAddress = user.Email,
                 Teams = teams.ToList(),
                 Projects = projects.ToList(),
             };
 
             return View(accountViewModal);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(DetailAccountViewModal detailAccountViewModal)
+        {
+            throw new NotImplementedException();
         }
     }
 }
