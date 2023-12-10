@@ -1,4 +1,5 @@
-﻿@using WeldingJobTrackerWebApp.Models.ViewModels.ViewAccount;
+﻿@using WeldingJobTrackerWebApp.Data.Enum
+@using WeldingJobTrackerWebApp.Models.ViewModels.ViewAccount;
 @model DetailAccountViewModal;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -26,38 +27,73 @@
         <div class="card mb-4">
             <div class="card-header">Account Details</div>
             <div class="card-body">
-                <form asp-action="Edit">
-                    <!-- Form Row-->
+                <form method="post" asp-action="Details" enctype="multipart/form-data">
+                    <input type="hidden" value="@Model.CompanyId" name="CompanyId" />
+                    <input type="hidden" value="@Model.Id" name="Id" />
                     <div class="row gx-3 mb-3">
-                        <!-- Form Group (first name)-->
                         <div class="col-md-6">
                             <label asp-for="FirstName" class="small mb-1">First name</label>
                             <input asp-for="FirstName" class="form-control" type="text" placeholder="Enter your first name">
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
-                        <!-- Form Group (last name)-->
                         <div class="col-md-6">
                             <label asp-for="LastName" class="small mb-1">Last name</label>
                             <input asp-for="LastName" class="form-control" type="text" placeholder="Enter your last name">
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                     </div>
-                    <!-- Form Row        -->
+
                     <div class="row gx-3 mb-3">
-                        <!-- Form Group (organization name)-->
                         <div class="col-md-6">
                             <label asp-for="CompanyName" class="small mb-1">Organization name</label>
                             <input asp-for="CompanyName" class="form-control" type="text" placeholder="Enter your organization name">
                             <span asp-validation-for="CompanyName" class="text-danger"></span>
                         </div>
                     </div>
-                    <!-- Form Group (email address)-->
-                    <div class="mb-3">
+
+                    <div class="row gx-3 mb-3">
                         <label asp-for="EmailAddress" class="small mb-1">Email address</label>
                         <input asp-for="EmailAddress" class="form-control" type="email" placeholder="Enter your email address">
                     </div>
+
+                    <div class="row gx-3 mb-3">
+                        <label asp-for="Address.Street1" class="small mb-1">Street</label>
+                        <input asp-for="Address.Street1" type="text" class="form-control" aria-describedby="Street" placeholder="Street">
+                        <span asp-validation-for="Address.Street1" class="text-danger"></span>
+                    </div>
+
+                    <div class="row gx-3 mb-3">
+                        <label asp-for="Address.Street2" class="small mb-1">Apt/Suit</label>
+                        <input asp-for="Address.Street2" type="text" class="form-control" aria-describedby="Apt/Suit" placeholder="Apt/Suit">
+                        <span asp-validation-for="Address.Street2" class="text-danger"></span>
+                    </div>
+
+                    <div class="row gx-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Address.City" class="small mb-1">City</label>
+                            <input asp-for="Address.City" type="text" class="form-control" aria-describedby="City" placeholder="City">
+                            <span asp-validation-for="Address.City" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Address.State" class="small mb-1">State</label>
+                            <select asp-for="Address.State" asp-items="@Html.GetEnumSelectList<State>()" class="form-control">
+                                <option>--Select--</option>
+                            </select>
+                            <span asp-validation-for="Address.State" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row gx-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Address.PostalCode" class="small mb-1">Zip</label>
+                            <input asp-for="Address.PostalCode" type="text" class="form-control" aria-describedby="Zip" placeholder="Zip">
+                            <span asp-validation-for="Address.PostalCode" class="text-danger"></span>
+                        </div>
+                    </div>
+
                     <!-- Save changes button-->
-                    <button class="btn btn-primary" type="button">Save changes</button>
+                    <button class="btn btn-primary" type="submit">Save changes</button>
                 </form>
             </div>
         </div>

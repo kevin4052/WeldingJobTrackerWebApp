@@ -10,7 +10,7 @@
         public Address? Address { get; set; }
         public int CompanyId { get; set; }
         public string CompanyName { get; set; }
-        public List<Team> Teams { get; set; }
-        public List<Project> Projects { get; set; }
+        public List<Team>? Teams { get; set; }
+        public List<Project>? Projects { get; set; }
     }
 }

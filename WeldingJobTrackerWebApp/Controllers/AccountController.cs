@@ -5,6 +5,9 @@ using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 using WeldingJobTrackerWebApp.Models.ViewModels.ViewAccount;
+using WeldingJobTrackerWebApp.Models.ViewModels.ViewClient;
+using WeldingJobTrackerWebApp.Repositories;
+using WeldingJobTrackerWebApp.Services;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {
@@ -194,6 +197,11 @@ namespace WeldingJobTrackerWebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
+            if (id.IsNullOrEmpty())
+            {
+                View("index");
+            }
+
             var user = await _userRepository.GetUserbyIdAsync(id);
             var teams = await _teamRepository.GetUserTeams(user.Id);
             var projects = await _projectRepository.GetUserProjects(user.Id);
@@ -216,9 +224,70 @@ namespace WeldingJobTrackerWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(DetailAccountViewModal detailAccountViewModal)
+        public async Task<IActionResult> Details(string id, DetailAccountViewModal detailAccountViewModal)
         {
-            throw new NotImplementedException();
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Failed to update user");
+                return View(detailAccountViewModal);
+            }
+
+            var user = await _userRepository.GetByIdAsyncNoTracking(id);
+
+            if (user == null)
+            {
+                return View("Error");
+            }
+
+            //var imageUploadresult = await _photoService.AddPhotoAsync(clientViewModel.Image);
+
+            //if (imageUploadresult != null && imageUploadresult.Error != null)
+            //{
+            //    var errorMessage = imageUploadresult?.Error?.Message ?? "Error uploading image";
+            //    ModelState.AddModelError("Image", errorMessage);
+            //    return View(clientViewModel);
+            //}
+
+            //if (!string.IsNullOrEmpty(user.Image.publicId) && imageUploadresult != null)
+            //{
+            //    await _photoService.DeletPhotoAsync(user.Image.publicId);
+            //}
+
+            var userUpdate = new User
+            {
+                Id = id,
+                FirstName= detailAccountViewModal.FirstName,
+                LastName= detailAccountViewModal.LastName,
+                Email = detailAccountViewModal.EmailAddress,
+                UserName = detailAccountViewModal.EmailAddress,
+                AddressId = user.AddressId,
+                Address = new Address
+                {
+                    Id = (int)user.AddressId,
+                    Street1 = detailAccountViewModal.Address.Street1,
+                    Street2 = detailAccountViewModal.Address.Street2,
+                    City = detailAccountViewModal.Address.City,
+                    State = detailAccountViewModal.Address.State,
+                    PostalCode = detailAccountViewModal.Address.PostalCode,
+                },
+                //ImageId = client.Image.Id,
+                //Image = new Image
+                //{
+                //    Id = client.Image.Id,
+                //    publicId = imageUploadresult?.PublicId ?? client.Image.publicId,
+                //    Url = imageUploadresult?.Url.ToString() ?? client.Image.Url
+                //},
+            };
+
+            var result = await _userRepository.Update(userUpdate);
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Failed to update user");
+                return View(detailAccountViewModal);
+            }
+
+            return View(detailAccountViewModal);
         }
     }
 }
