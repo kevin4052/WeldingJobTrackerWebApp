@@ -5,12 +5,39 @@
 @{
 }
 
-<h3>Teams</h3>
-<ul>
-    @foreach(var team in Model)
-    {
-        <li>
-            <a asp-controller="Team" asp-action="Detail" asp-route-id="@team?.Id" type="button" class="btn btn-primary">@team.Name</a>
-        </li>
-    }
-</ul>
+<div class="jumbotron">
+    <div class="container">
+        <h3 class="display-3">Team List</h3>
+        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <a asp-controller="Client" asp-action="Create" type="button" class="btn btn-primary">Create</a>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Team ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Projects</th>
+            <th scope="col">Team Size</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var team in Model)
+        {
+            <tr>
+                <th scope="row">@team.Id</th>
+                <td>@team.Name</td>
+                <td>@team?.Projects.Count()</td>
+                <td>@team?.TeamMembers.Count()</td>
+                <td>
+                    <a asp-controller="Team" asp-action="Detail" asp-route-id="@team?.Id" type="button" class="btn btn-primary">View</a>
+                </td>
+                <td>
+                    <a asp-controller="Team" asp-action="Edit" asp-route-id="@team?.Id" type="button" class="btn btn-primary">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,51 @@
+﻿@using WeldingJobTrackerWebApp.Models.ViewModels.ViewTeam;
+@model EditTeamViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Edit Team";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-3">
+        @if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span>@TempData["Error"]</span>
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <h3>Edit Team</h3>
+                <form method="post" asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
+                    <input type="hidden" id="AdminSelectList" name="AdminSelectList" asp-for="AdminSelectList" />
+                    <input type="hidden" id="WelderSelectList" name="WelderSelectList" asp-for="WelderSelectList" />
+                    <input type="hidden" id="ProjectSelectList" name="ProjectSelectList" asp-for="ProjectSelectList" />
+
+                    <div class="form-group">
+                        <label asp-for="Name">Name</label>
+                        <input asp-for="Name" type="text" class="form-control" aria-describedby="Project Name" placeholder="Project Name">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="SelectedAdminId">Lead</label>
+                        <select asp-for="SelectedAdminId" class="form-control" asp-items="Model.AdminSelectList"></select>
+                        <span asp-validation-for="SelectedAdminId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="SelectedWelderId">Welder</label>
+                        <select asp-for="SelectedWelderId" class="form-control" asp-items="Model.WelderSelectList"></select>
+                        <span asp-validation-for="SelectedWelderId" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-2">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
