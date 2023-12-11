@@ -13,5 +13,7 @@ namespace WeldingJobTrackerWebApp.Models.ViewModels.ViewTeam
         public int SelectedProjectId { get; set; }
         public string SelectedWelderId { get; set; }
         public string SelectedAdminId { get; set; }
+        public List<CheckBoxOption>? Test { get; set;}
+        public List<string>? SelectedCheckBox { get; set; }
     }
 }

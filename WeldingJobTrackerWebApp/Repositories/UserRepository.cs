@@ -91,13 +91,6 @@ namespace WeldingJobTrackerWebApp.Repositories
                 .Include(x => x.Company)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
-        public async Task<User> GetByIdAsyncNoTracking(string id)
-        {
-            return await _userManager.Users
-                .Include(x => x.Company)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == id);
-        }
 
         public async Task<IdentityResult> Update(User user)
         {

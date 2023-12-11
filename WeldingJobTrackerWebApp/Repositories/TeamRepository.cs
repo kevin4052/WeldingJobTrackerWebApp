@@ -28,6 +28,13 @@ namespace WeldingJobTrackerWebApp.Repositories
                 .FirstOrDefaultAsync(team => team.Id == id);
         }
 
+        public async Task<Team> GetByIdAsyncNoTracking(int id)
+        {
+            return await _context.Teams
+                .AsNoTracking()
+                .FirstOrDefaultAsync(team => team.Id == id);
+        }
+
         public async Task<IEnumerable<Team>> GetAll()
         {
             var currentUserId = _httpContextAccessor.HttpContext?.User?.GetUserId();

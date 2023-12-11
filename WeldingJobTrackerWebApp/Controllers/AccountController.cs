@@ -232,7 +232,7 @@ namespace WeldingJobTrackerWebApp.Controllers
                 return View(detailAccountViewModal);
             }
 
-            var user = await _userRepository.GetByIdAsyncNoTracking(id);
+            var user = await _userRepository.GetUserbyIdAsync(id);
 
             if (user == null)
             {
@@ -253,33 +253,32 @@ namespace WeldingJobTrackerWebApp.Controllers
             //    await _photoService.DeletPhotoAsync(user.Image.publicId);
             //}
 
-            var userUpdate = new User
-            {
-                Id = id,
-                FirstName= detailAccountViewModal.FirstName,
-                LastName= detailAccountViewModal.LastName,
-                Email = detailAccountViewModal.EmailAddress,
-                UserName = detailAccountViewModal.EmailAddress,
-                AddressId = user.AddressId,
-                Address = new Address
-                {
-                    Id = (int)user.AddressId,
-                    Street1 = detailAccountViewModal.Address.Street1,
-                    Street2 = detailAccountViewModal.Address.Street2,
-                    City = detailAccountViewModal.Address.City,
-                    State = detailAccountViewModal.Address.State,
-                    PostalCode = detailAccountViewModal.Address.PostalCode,
-                },
-                //ImageId = client.Image.Id,
-                //Image = new Image
-                //{
-                //    Id = client.Image.Id,
-                //    publicId = imageUploadresult?.PublicId ?? client.Image.publicId,
-                //    Url = imageUploadresult?.Url.ToString() ?? client.Image.Url
-                //},
-            };
 
-            var result = await _userRepository.Update(userUpdate);
+            user.Id = id;
+            user.FirstName = detailAccountViewModal.FirstName;
+            user.LastName = detailAccountViewModal.LastName;
+            user.Email = detailAccountViewModal.EmailAddress;
+            user.UserName = detailAccountViewModal.EmailAddress;
+            user.AddressId = user.AddressId;
+            user.Address = new Address
+            {
+                Id = (int)user.AddressId,
+                Street1 = detailAccountViewModal.Address.Street1,
+                Street2 = detailAccountViewModal.Address.Street2,
+                City = detailAccountViewModal.Address.City,
+                State = detailAccountViewModal.Address.State,
+                PostalCode = detailAccountViewModal.Address.PostalCode,
+            };
+            //ImageId = client.Image.Id,
+            //Image = new Image
+            //{
+            //    Id = client.Image.Id,
+            //    publicId = imageUploadresult?.PublicId ?? client.Image.publicId,
+            //    Url = imageUploadresult?.Url.ToString() ?? client.Image.Url
+            //},
+
+
+            var result = await _userRepository.Update(user);
 
             if (!result.Succeeded)
             {

@@ -3,6 +3,7 @@ using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 using WeldingJobTrackerWebApp.Models.ViewModels.ViewTeam;
 using WeldingJobTrackerWebApp.Data;
+using WeldingJobTrackerWebApp.Models.ViewModels;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {
@@ -115,15 +116,79 @@ namespace WeldingJobTrackerWebApp.Controllers
             var teamViewModel = new EditTeamViewModel()
             {
                 CompanyId = currentUser.CompanyId,
+                Name = team.Name,
                 ProjectSelectList = projectSelectList.ToList(),
                 AdminSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "admin").Users,
                 WelderSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "welder").Users,
                 SelectedAdminId = team.TeamMembers.FirstOrDefault(tm => tm.Role.Name == TeamRoleCode.ProjectManager).UserId,
                 SelectedWelderId = team.TeamMembers.FirstOrDefault(tm => tm.Role.Name == TeamRoleCode.Labor).UserId,
-                SelectedProjectId = team.Projects.First().Id
+                SelectedProjectId = team.Projects.First().Id,
+                Test = new List<CheckBoxOption>()
+                {
+                    new CheckBoxOption()
+                    {
+                        IsChecked = false,
+                        Text = "test 1",
+                        value = "1"
+                    },
+                    new CheckBoxOption()
+                    {
+                        IsChecked= false,
+                        Text = "test 2",
+                        value = "2"
+                    },
+                    new CheckBoxOption()
+                    {
+                        IsChecked = false, 
+                        Text = "test 3", 
+                        value = "3"
+                    }
+                }
             };
 
             return View(teamViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, EditTeamViewModel teamViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "creating client failed");
+                return View(teamViewModel);
+            }
+
+            var team = await _teamRepository.GetByIdAsyncNoTracking(id);
+
+            if (team == null)
+            {
+                return View("Error");
+            }
+
+            var teamRoles = await _teamRoleRepository.GetTeamRolesAsync();
+
+            var updatedteam = new Team
+            {
+                Name = teamViewModel.Name,
+                Projects = new List<Project>(),
+                TeamMembers = new List<TeamMember>()
+                {
+                    new TeamMember
+                    {
+                        UserId = teamViewModel.SelectedWelderId,
+                        RoleId = teamRoles.FirstOrDefault(r => r.Code == TeamRoleCode.Labor).Id
+                    },
+                    new TeamMember
+                    {
+                        UserId = teamViewModel.SelectedAdminId,
+                        RoleId = teamRoles.FirstOrDefault(r => r.Code == TeamRoleCode.ProjectManager).Id
+                    }
+                },
+            };
+
+            _teamRepository.Update(updatedteam);
+
+            return RedirectToAction("Index");
         }
     }
 }

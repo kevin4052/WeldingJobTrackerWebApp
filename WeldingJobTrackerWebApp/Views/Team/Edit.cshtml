@@ -42,6 +42,18 @@
                         <select asp-for="SelectedWelderId" class="form-control" asp-items="Model.WelderSelectList"></select>
                         <span asp-validation-for="SelectedWelderId" class="text-danger"></span>
                     </div>
+                    @foreach (var option in Model.Test)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input 
+                                class="form-check-input"
+                                name="SelectedCheckBox"
+                                type="checkbox"
+                                checked="@option.IsChecked"
+                            value="@option.value">
+                            <label asp-for="Test" class="form-check-label">@option.Text</label>
+                        </div>
+                    }
 
                     <button type="submit" class="btn btn-primary mt-2">Update</button>
                 </form>
