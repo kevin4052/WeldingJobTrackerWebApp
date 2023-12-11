@@ -7,21 +7,7 @@
 @{
 }
 
-<div class="row">
-    <div class="col-xl-4">
-        <!-- Profile picture card-->
-        <div class="card mb-4 mb-xl-0">
-            <div class="card-header">Profile Picture</div>
-            <div class="card-body text-center">
-                <!-- Profile picture image-->
-                <img class="img-account-profile rounded-circle mb-2" src="assets/img/illustrations/profiles/profile-1.png" alt="">
-                <!-- Profile picture help block-->
-                <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                <!-- Profile picture upload button-->
-                <button class="btn btn-primary" type="button">Upload new image</button>
-            </div>
-        </div>
-    </div>
+<div class="row justify-content-center">
     <div class="col-xl-8">
         <!-- Account details card-->
         <div class="card mb-4">
@@ -30,6 +16,15 @@
                 <form method="post" asp-action="Details" enctype="multipart/form-data">
                     <input type="hidden" value="@Model.CompanyId" name="CompanyId" />
                     <input type="hidden" value="@Model.Id" name="Id" />
+
+                    <div class="row gx-3 mb-3">
+                        <!-- Profile picture image-->
+                        <img class="profile-image img-fluid rounded-circle mb-2" src="@Model.ImageUrl" alt="">
+
+                        <input asp-for="Image" type="file" class="form-control" aria-describedby="Image" placeholder="Image">
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+
                     <div class="row gx-3 mb-3">
                         <div class="col-md-6">
                             <label asp-for="FirstName" class="small mb-1">First name</label>
@@ -46,26 +41,32 @@
                     <div class="row gx-3 mb-3">
                         <div class="col-md-6">
                             <label asp-for="CompanyName" class="small mb-1">Organization name</label>
-                            <input asp-for="CompanyName" class="form-control" type="text" placeholder="Enter your organization name">
+                            <input name="CompanyName" class="form-control" type="text" value="@Model.CompanyName" disabled>
                             <span asp-validation-for="CompanyName" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="row gx-3 mb-3">
-                        <label asp-for="EmailAddress" class="small mb-1">Email address</label>
-                        <input asp-for="EmailAddress" class="form-control" type="email" placeholder="Enter your email address">
+                        <div class="col">
+                            <label asp-for="EmailAddress" class="small mb-1">Email address</label>
+                            <input asp-for="EmailAddress" class="form-control" type="email" placeholder="Enter your email address">
+                        </div>
                     </div>
 
                     <div class="row gx-3 mb-3">
-                        <label asp-for="Address.Street1" class="small mb-1">Street</label>
-                        <input asp-for="Address.Street1" type="text" class="form-control" aria-describedby="Street" placeholder="Street">
-                        <span asp-validation-for="Address.Street1" class="text-danger"></span>
+                        <div class="col">
+                            <label asp-for="Address.Street1" class="small mb-1">Street</label>
+                            <input asp-for="Address.Street1" type="text" class="form-control" aria-describedby="Street" placeholder="Street">
+                            <span asp-validation-for="Address.Street1" class="text-danger"></span>
+                        </div>
                     </div>
 
                     <div class="row gx-3 mb-3">
-                        <label asp-for="Address.Street2" class="small mb-1">Apt/Suit</label>
-                        <input asp-for="Address.Street2" type="text" class="form-control" aria-describedby="Apt/Suit" placeholder="Apt/Suit">
-                        <span asp-validation-for="Address.Street2" class="text-danger"></span>
+                        <div class="col">
+                            <label asp-for="Address.Street2" class="small mb-1">Apt/Suit</label>
+                            <input asp-for="Address.Street2" type="text" class="form-control" aria-describedby="Apt/Suit" placeholder="Apt/Suit">
+                            <span asp-validation-for="Address.Street2" class="text-danger"></span>
+                        </div>
                     </div>
 
                     <div class="row gx-3 mb-3">

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace WeldingJobTrackerWebApp.Migrations
 {
     /// <inheritdoc />
@@ -41,19 +43,6 @@ namespace WeldingJobTrackerWebApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Companys",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Companys", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -133,6 +122,56 @@ namespace WeldingJobTrackerWebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: true),
+                    ImageId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clients_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Clients_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Companys",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: true),
+                    ImageId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companys", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Companys_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Companys_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -140,6 +179,7 @@ namespace WeldingJobTrackerWebApp.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageId = table.Column<int>(type: "int", nullable: true),
                     AddressId = table.Column<int>(type: "int", nullable: true),
                     CompanyId = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -171,32 +211,11 @@ namespace WeldingJobTrackerWebApp.Migrations
                         principalTable: "Companys",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Clients",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: true),
-                    ImageId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Clients_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Addresses",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Clients_Images_ImageId",
+                        name: "FK_AspNetUsers_Images_ImageId",
                         column: x => x.ImageId,
                         principalTable: "Images",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -208,7 +227,7 @@ namespace WeldingJobTrackerWebApp.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectStatusId = table.Column<int>(type: "int", nullable: false),
                     TeamId = table.Column<int>(type: "int", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: true)
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -217,7 +236,8 @@ namespace WeldingJobTrackerWebApp.Migrations
                         name: "FK_Projects_Companys_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companys",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Projects_ProjectStatuses_ProjectStatusId",
                         column: x => x.ProjectStatusId,
@@ -350,6 +370,31 @@ namespace WeldingJobTrackerWebApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "ProjectStatuses",
+                columns: new[] { "Id", "Code", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Draft", "Draft" },
+                    { 2, "Pending", "Pending" },
+                    { 3, "Active", "Active" },
+                    { 4, "OnHold", "OnHold" },
+                    { 5, "InActive", "InActive" },
+                    { 6, "Completed", "Completed" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TeamRoles",
+                columns: new[] { "Id", "Code", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Project Manager", "ProjectManager" },
+                    { 2, "Supervisor", "Supervisor" },
+                    { 3, "Engineer", "Engineer" },
+                    { 4, "Drafter", "Drafter" },
+                    { 5, "Labor", "Labor" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -393,6 +438,11 @@ namespace WeldingJobTrackerWebApp.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_ImageId",
+                table: "AspNetUsers",
+                column: "ImageId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -407,6 +457,16 @@ namespace WeldingJobTrackerWebApp.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Clients_ImageId",
                 table: "Clients",
+                column: "ImageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Companys_AddressId",
+                table: "Companys",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Companys_ImageId",
+                table: "Companys",
                 column: "ImageId");
 
             migrationBuilder.CreateIndex(
@@ -471,9 +531,6 @@ namespace WeldingJobTrackerWebApp.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Images");
-
-            migrationBuilder.DropTable(
                 name: "ProjectStatuses");
 
             migrationBuilder.DropTable(
@@ -486,10 +543,13 @@ namespace WeldingJobTrackerWebApp.Migrations
                 name: "Teams");
 
             migrationBuilder.DropTable(
+                name: "Companys");
+
+            migrationBuilder.DropTable(
                 name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "Companys");
+                name: "Images");
         }
     }
 }

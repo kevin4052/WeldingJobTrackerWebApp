@@ -7,50 +7,23 @@ namespace WeldingJobTrackerWebApp.Data
 {
     public class Seed
     {
-        public static void SeedData(IApplicationBuilder applicationBuilder)
+        public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationBuilder)
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-
                 context.Database.EnsureCreated();
 
-                if (!context.ProjectStatuses.Any())
+                if (!context.Companys.Any())
                 {
-                    context.ProjectStatuses.AddRange(new List<ProjectStatus>()
+                    context.Companys.AddRange(new List<Company>()
                     {
-                        new ProjectStatus()
+                        new Company()
                         {
-                            Code = "Draft",
-                            Name = "Draft",
-                        },
-                        new ProjectStatus()
-                        {
-                            Code = "Pending",
-                            Name = "Pending",
-                        },
-                        new ProjectStatus()
-                        {
-                            Code = "Active",
-                            Name = "Active",
-                        },
-                        new ProjectStatus()
-                        {
-                            Code = "OnHold",
-                            Name = "OnHold",
-                        },
-                        new ProjectStatus()
-                        {
-                            Code = "InActive",
-                            Name = "InActive",
-                        },
-                        new ProjectStatus()
-                        {
-                            Code = "Completed",
-                            Name = "Completed",
-                        },
+                            Name = "Test LLC"
+                        }
                     });
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
 
                 if (!context.Clients.Any())
@@ -85,39 +58,19 @@ namespace WeldingJobTrackerWebApp.Data
                     context.SaveChanges();
                 }
 
-            }
-        }
-
-        public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationBuilder)
-        {
-            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
-            {
-                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                context.Database.EnsureCreated();
-
-                if (!context.Companys.Any())
-                {
-                    context.Companys.AddRange(new List<Company>()
-                    {
-                        new Company()
-                        {
-                            Name = "Test LLC"
-                        }
-                    });
-                    await context.SaveChangesAsync();
-                }
-
                 var seedCompany = context.Companys.FirstOrDefault(c => c.Name == "Test LLC");
 
                 //Roles
                 var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
                 if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
+                {
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+                }
                 if (!await roleManager.RoleExistsAsync(UserRoles.Welder))
+                {
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Welder));
-                if (!await roleManager.RoleExistsAsync(UserRoles.User))
-                    await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+                }
 
                 //Users
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<User>>();

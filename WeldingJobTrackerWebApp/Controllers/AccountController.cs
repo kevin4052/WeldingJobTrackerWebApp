@@ -5,9 +5,6 @@ using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 using WeldingJobTrackerWebApp.Models.ViewModels.ViewAccount;
-using WeldingJobTrackerWebApp.Models.ViewModels.ViewClient;
-using WeldingJobTrackerWebApp.Repositories;
-using WeldingJobTrackerWebApp.Services;
 
 namespace WeldingJobTrackerWebApp.Controllers
 {
@@ -20,6 +17,7 @@ namespace WeldingJobTrackerWebApp.Controllers
         private readonly IProjectRepository _projectRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly ITeamRepository _teamRepository;
+        private readonly IPhotoService _photoService;
 
         public AccountController(
             UserManager<User> userManager, 
@@ -28,7 +26,8 @@ namespace WeldingJobTrackerWebApp.Controllers
             IUserRepository userRepository, 
             IProjectRepository projectRepository,
             IRoleRepository roleRepository,
-            ITeamRepository teamRepository)
+            ITeamRepository teamRepository,
+            IPhotoService photoService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -37,6 +36,7 @@ namespace WeldingJobTrackerWebApp.Controllers
             _projectRepository = projectRepository;
             _roleRepository = roleRepository;
             _teamRepository = teamRepository;
+            _photoService = photoService;
         }
 
         public IActionResult Login()
@@ -216,6 +216,7 @@ namespace WeldingJobTrackerWebApp.Controllers
                 MiddleName = user.MiddleName,
                 LastName= user.LastName,
                 EmailAddress = user.Email,
+                ImageUrl = user?.Image?.Url,
                 Teams = teams.ToList(),
                 Projects = projects.ToList(),
             };
@@ -239,44 +240,59 @@ namespace WeldingJobTrackerWebApp.Controllers
                 return View("Error");
             }
 
-            //var imageUploadresult = await _photoService.AddPhotoAsync(clientViewModel.Image);
-
-            //if (imageUploadresult != null && imageUploadresult.Error != null)
-            //{
-            //    var errorMessage = imageUploadresult?.Error?.Message ?? "Error uploading image";
-            //    ModelState.AddModelError("Image", errorMessage);
-            //    return View(clientViewModel);
-            //}
-
-            //if (!string.IsNullOrEmpty(user.Image.publicId) && imageUploadresult != null)
-            //{
-            //    await _photoService.DeletPhotoAsync(user.Image.publicId);
-            //}
-
-
             user.Id = id;
             user.FirstName = detailAccountViewModal.FirstName;
+            user.MiddleName = detailAccountViewModal.MiddleName;
             user.LastName = detailAccountViewModal.LastName;
             user.Email = detailAccountViewModal.EmailAddress;
             user.UserName = detailAccountViewModal.EmailAddress;
-            user.AddressId = user.AddressId;
-            user.Address = new Address
-            {
-                Id = (int)user.AddressId,
-                Street1 = detailAccountViewModal.Address.Street1,
-                Street2 = detailAccountViewModal.Address.Street2,
-                City = detailAccountViewModal.Address.City,
-                State = detailAccountViewModal.Address.State,
-                PostalCode = detailAccountViewModal.Address.PostalCode,
-            };
-            //ImageId = client.Image.Id,
-            //Image = new Image
-            //{
-            //    Id = client.Image.Id,
-            //    publicId = imageUploadresult?.PublicId ?? client.Image.publicId,
-            //    Url = imageUploadresult?.Url.ToString() ?? client.Image.Url
-            //},
+            user.AddressId = user.AddressId ?? 0;
 
+            if (user.AddressId == 0)
+            {
+                user.Address = new Address
+                {
+                    Id = (int)user.AddressId,
+                    Street1 = detailAccountViewModal.Address.Street1,
+                    Street2 = detailAccountViewModal.Address.Street2,
+                    City = detailAccountViewModal.Address.City,
+                    State = detailAccountViewModal.Address.State,
+                    PostalCode = detailAccountViewModal.Address.PostalCode,
+                };
+
+            } else
+            {
+                user.Address.Street1 = detailAccountViewModal.Address.Street1;
+                user.Address.Street2 = detailAccountViewModal.Address.Street2;
+                user.Address.City = detailAccountViewModal.Address.City;
+                user.Address.State = detailAccountViewModal.Address.State;
+                user.Address.PostalCode = detailAccountViewModal.Address.PostalCode;
+            }
+
+            var imageUploadresult = await _photoService.AddPhotoAsync(detailAccountViewModal.Image);
+
+            if (imageUploadresult != null && imageUploadresult.Error != null)
+            {
+                var errorMessage = imageUploadresult?.Error?.Message ?? "Error uploading image";
+                ModelState.AddModelError("Image", errorMessage);
+                return View(detailAccountViewModal);
+            }
+
+            if (!string.IsNullOrEmpty(user?.Image?.publicId) && imageUploadresult != null)
+            {
+                await _photoService.DeletPhotoAsync(user.Image.publicId);
+            }
+            
+            if (imageUploadresult != null)
+            {
+                user.ImageId = user?.Image?.Id ?? 0;
+                user.Image = new Image
+                {
+                    Id = user?.Image?.Id ?? 0,
+                    publicId = imageUploadresult?.PublicId ?? user.Image.publicId,
+                    Url = imageUploadresult?.Url.ToString() ?? user.Image.Url
+                };
+            }
 
             var result = await _userRepository.Update(user);
 

@@ -36,6 +36,23 @@ namespace WeldingJobTrackerWebApp.Data
                 .HasMany(t => t.TeamMembers)
                 .WithOne(tm => tm.Team);
 
+            builder.Entity<ProjectStatus>().HasData(
+                new { Id = 1, Code = "Draft", Name = "Draft" },
+                new { Id = 2, Code = "Pending", Name = "Pending" },
+                new { Id = 3, Code = "Active", Name = "Active" },
+                new { Id = 4, Code = "OnHold", Name = "OnHold" },
+                new { Id = 5, Code = "InActive", Name = "InActive" },
+                new { Id = 6, Code = "Completed", Name = "Completed" }
+            );
+
+            builder.Entity<TeamRole>().HasData(
+                new { Id = 1, Code = "Project Manager", Name = "ProjectManager" },
+                new { Id = 2, Code = "Supervisor", Name = "Supervisor" },
+                new { Id = 3, Code = "Engineer", Name = "Engineer" },
+                new { Id = 4, Code = "Drafter", Name = "Drafter" },
+                new { Id = 5, Code = "Labor", Name = "Labor" }
+            );
+
             base.OnModelCreating(builder);
         }
     }
