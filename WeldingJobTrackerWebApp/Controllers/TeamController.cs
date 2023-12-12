@@ -120,9 +120,9 @@ namespace WeldingJobTrackerWebApp.Controllers
                 ProjectSelectList = projectSelectList.ToList(),
                 AdminSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "admin").Users,
                 WelderSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "welder").Users,
-                SelectedAdminId = team.TeamMembers.FirstOrDefault(tm => tm.Role.Name == TeamRoleCode.ProjectManager).UserId,
-                SelectedWelderId = team.TeamMembers.FirstOrDefault(tm => tm.Role.Name == TeamRoleCode.Labor).UserId,
-                SelectedProjectId = team.Projects.First().Id,
+                SelectedAdminId = team.TeamMembers.FirstOrDefault(tm => tm.Role.Code == TeamRoleCode.ProjectManager).UserId,
+                SelectedWelderId = team.TeamMembers.FirstOrDefault(tm => tm.Role.Code == TeamRoleCode.Labor).UserId,
+                SelectedProjectId = team.Projects.First()?.Id ?? 0,
                 Test = new List<CheckBoxOption>()
                 {
                     new CheckBoxOption()
@@ -139,8 +139,8 @@ namespace WeldingJobTrackerWebApp.Controllers
                     },
                     new CheckBoxOption()
                     {
-                        IsChecked = false, 
-                        Text = "test 3", 
+                        IsChecked = false,
+                        Text = "test 3",
                         value = "3"
                     }
                 }

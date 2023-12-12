@@ -46,7 +46,7 @@ namespace WeldingJobTrackerWebApp.Data
             );
 
             builder.Entity<TeamRole>().HasData(
-                new { Id = 1, Code = "Project Manager", Name = "ProjectManager" },
+                new { Id = 1, Code = "ProjectManager", Name = "Project Manager" },
                 new { Id = 2, Code = "Supervisor", Name = "Supervisor" },
                 new { Id = 3, Code = "Engineer", Name = "Engineer" },
                 new { Id = 4, Code = "Drafter", Name = "Drafter" },
