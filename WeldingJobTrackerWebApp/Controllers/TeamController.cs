@@ -169,6 +169,7 @@ namespace WeldingJobTrackerWebApp.Controllers
 
             var updatedteam = new Team
             {
+                Id = team.Id,
                 Name = teamViewModel.Name,
                 Projects = new List<Project>(),
                 TeamMembers = new List<TeamMember>()

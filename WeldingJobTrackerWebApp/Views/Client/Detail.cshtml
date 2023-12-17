@@ -1,4 +1,5 @@
-﻿@model Client
+﻿@using WeldingJobTrackerWebApp.Models.ViewModels.ViewClient
+@model DetailClientViewModel
 
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -6,5 +7,31 @@
 @{
 }
 
-<p>Client Name: @Model.Name</p>
-<img alt="Image" src="@Model.Image?.Url" class="rounded img-fluid" />
+<div class="card">
+    <img class="card-img-top" src="@Model.ImageUrl" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text">...</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-4">
+        <!-- Profile picture card-->
+        <div class="card mb-4 mb-xl-0">
+            <div class="card-header">Profile Picture</div>
+            <div class="card-body text-center">
+                <!-- Profile picture image-->
+                <img class="img-account-profile rounded-circle mb-2" src="@Model.ImageUrl" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <!-- details card-->
+        <div class="card mb-4">
+            <div class="card-header">Client Details</div>
+            <div class="card-body">
+            </div>
+        </div>
+    </div>
+</div>

@@ -24,7 +24,16 @@ namespace WeldingJobTrackerWebApp.Controllers
         public async Task<IActionResult> Detail(int id) 
         {
             var client = await _clientRepository.GetByIdAsync(id);
-            return View(client);
+            var clientViewModel = new DetailClientViewModel
+            {
+                Id = id,
+                Name = client.Name,
+                ImageUrl = client?.Image?.Url,
+                AddressId = client?.Address?.Id,
+                Address = client?.Address
+            };
+
+            return View(clientViewModel);
         }
 
         public IActionResult Create()

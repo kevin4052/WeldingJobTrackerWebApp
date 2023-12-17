@@ -32,6 +32,11 @@ namespace WeldingJobTrackerWebApp.Repositories
         {
             return await _context.Teams
                 .AsNoTracking()
+                .Include(team => team.Projects)
+                .Include(team => team.TeamMembers)
+                    .ThenInclude(teamMember => teamMember.User)
+                .Include(team => team.TeamMembers)
+                    .ThenInclude(teamMember => teamMember.Role)
                 .FirstOrDefaultAsync(team => team.Id == id);
         }
 
