@@ -19,55 +19,68 @@
         <div class="card mb-4">
             <div class="card-header">Edit Team</div>
             <div class="card-body">
-                <form method="post" asp-action="Edit">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
-                    <input type="hidden" id="AdminSelectList" name="AdminSelectList" asp-for="AdminSelectList" />
-                    <input type="hidden" id="WelderSelectList" name="WelderSelectList" asp-for="WelderSelectList" />
-                    <input type="hidden" id="ProjectSelectList" name="ProjectSelectList" asp-for="ProjectSelectList" />
+                <div class="row">
+                    <div class="col">
+                        <form method="post" asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" id="CompanyId" name="CompanyId" asp-for="CompanyId" />
+                            <input type="hidden" id="AdminSelectList" name="AdminSelectList" asp-for="AdminSelectList" />
+                            <input type="hidden" id="WelderSelectList" name="WelderSelectList" asp-for="WelderSelectList" />
+                            <input type="hidden" id="ProjectSelectList" name="ProjectSelectList" asp-for="ProjectSelectList" />
 
-                    <div class="row gx-3 mb-3">
-                        <div class="col">
-                            <label asp-for="Name">Name</label>
-                            <input asp-for="Name" type="text" class="form-control" aria-describedby="Project Name" placeholder="Project Name">
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="row gx-3 mb-3">
-                        <div class="col">
-                            <label asp-for="SelectedAdminId">Lead</label>
-                            <select asp-for="SelectedAdminId" class="form-control" asp-items="Model.AdminSelectList"></select>
-                            <span asp-validation-for="SelectedAdminId" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="row gx-3 mb-3">
-                        <div class="col">
-                            <label asp-for="SelectedWelderId">Welder</label>
-                            <select asp-for="SelectedWelderId" class="form-control" asp-items="Model.WelderSelectList"></select>
-                            <span asp-validation-for="SelectedWelderId" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="row gx-3 mb-3">
-                        <div class="col">
-                            @foreach (var option in Model.Test)
-                            {
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input"
-                                           name="SelectedCheckBox"
-                                           type="checkbox"
-                                           checked="@option.IsChecked"
-                                           value="@option.value">
-                                    <label asp-for="Test" class="form-check-label">@option.Text</label>
+                            <div class="row gx-3 mb-3">
+                                <div class="col">
+                                    <label asp-for="Name">Name</label>
+                                    <input asp-for="Name" type="text" class="form-control" aria-describedby="Project Name" placeholder="Project Name">
+                                    <span asp-validation-for="Name" class="text-danger"></span>
                                 </div>
-                            }
-                        </div>
-                    </div>
+                            </div>
 
-                    <button class="btn btn-primary" type="submit">Save changes</button>
-                </form>
+                            <div class="row gx-3 mb-3">
+                                <div class="col">
+                                    <label asp-for="SelectedAdminId">Lead</label>
+                                    <select asp-for="SelectedAdminId" class="form-control" asp-items="Model.AdminSelectList"></select>
+                                    <span asp-validation-for="SelectedAdminId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row gx-3 mb-3">
+                                <div class="col">
+                                    <label asp-for="SelectedWelderId">Welder</label>
+                                    <select asp-for="SelectedWelderId" class="form-control" asp-items="Model.WelderSelectList"></select>
+                                    <span asp-validation-for="SelectedWelderId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row gx-3 mb-3">
+                                <div class="col">
+                                    @foreach (var option in Model.Test)
+                                    {
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input"
+                                                   name="SelectedCheckBox"
+                                                   type="checkbox"
+                                                   checked="@option.IsChecked"
+                                                   value="@option.value">
+                                            <label asp-for="Test" class="form-check-label">@option.Text</label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" type="submit">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col form-group">
+                        <form asp-action="Delete" method="post">
+                            <input type="hidden" asp-for="Id" />
+                            <input type="submit" value="Delete" class="btn btn-danger float-right mt-3" />
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

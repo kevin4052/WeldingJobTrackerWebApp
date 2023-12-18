@@ -25,7 +25,7 @@ namespace WeldingJobTrackerWebApp.Repositories
                     .ThenInclude(teamMember => teamMember.User)
                 .Include(team => team.TeamMembers)
                     .ThenInclude(teamMember => teamMember.Role)
-                .FirstOrDefaultAsync(team => team.Id == id);
+                .SingleAsync(team => team.Id == id);
         }
 
         public async Task<Team> GetByIdAsyncNoTracking(int id)
@@ -37,7 +37,7 @@ namespace WeldingJobTrackerWebApp.Repositories
                     .ThenInclude(teamMember => teamMember.User)
                 .Include(team => team.TeamMembers)
                     .ThenInclude(teamMember => teamMember.Role)
-                .FirstOrDefaultAsync(team => team.Id == id);
+                .SingleAsync(team => team.Id == id);
         }
 
         public async Task<IEnumerable<Team>> GetAll()
@@ -75,12 +75,6 @@ namespace WeldingJobTrackerWebApp.Repositories
             return Save();
         }
 
-        public bool Delete(Team team)
-        {
-            _context.Remove(team);
-            return Save();
-        }
-
         public bool Save()
         {
             var save = _context.SaveChanges();
@@ -92,5 +86,17 @@ namespace WeldingJobTrackerWebApp.Repositories
             _context.Update(team);
             return Save();
         }        
+
+        public bool Delete(Team team)
+        {
+            if (team.TeamMembers.Any())
+            {
+                 _context.RemoveRange(team.TeamMembers);
+            }
+
+            _context.Remove(team);
+
+            return Save();
+        }
     }
 }

@@ -16,18 +16,6 @@ namespace WeldingJobTrackerWebApp.Repositories
             _context = context;
         }
 
-        public bool Add(Client client)
-        {
-            _context.Add(client);
-            return Save();
-        }
-
-        public bool Delete(Client client)
-        {
-            _context.Remove(client);
-            return Save();
-        }
-
         public async Task<IEnumerable<Client>> GetAll()
         {
             return await _context.Clients
@@ -75,6 +63,28 @@ namespace WeldingJobTrackerWebApp.Repositories
         public bool Update(Client client)
         {
             _context.Update(client);
+            return Save();
+        }
+
+        public bool Add(Client client)
+        {
+            _context.Add(client);
+            return Save();
+        }
+
+        public bool Delete(Client client)
+        {
+            if (client.Address != null)
+            {
+                _context.Remove(client.Address);
+            }
+
+            if (client.Image != null)
+            {
+                _context.Remove(client.Image);
+            }
+
+            _context.Remove(client);
             return Save();
         }
     }

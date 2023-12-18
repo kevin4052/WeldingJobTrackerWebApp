@@ -118,11 +118,11 @@ namespace WeldingJobTrackerWebApp.Controllers
                 CompanyId = currentUser.CompanyId,
                 Name = team.Name,
                 ProjectSelectList = projectSelectList.ToList(),
-                AdminSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "admin").Users,
-                WelderSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "welder").Users,
-                SelectedAdminId = team.TeamMembers.FirstOrDefault(tm => tm.Role.Code == TeamRoleCode.ProjectManager).UserId,
-                SelectedWelderId = team.TeamMembers.FirstOrDefault(tm => tm.Role.Code == TeamRoleCode.Labor).UserId,
-                SelectedProjectId = team.Projects.First()?.Id ?? 0,
+                AdminSelectList = userSelectGroups.First(g => g.Role == UserRoles.Admin).Users,
+                WelderSelectList = userSelectGroups.First(g => g.Role == UserRoles.Welder).Users,
+                SelectedAdminId = team.TeamMembers.First(tm => tm.Role.Code == TeamRoleCode.ProjectManager).UserId,
+                SelectedWelderId = team.TeamMembers.First(tm => tm.Role.Code == TeamRoleCode.Labor).UserId,
+                //SelectedProjectId = team.Projects.First()?.Id ?? 0,
                 Test = new List<CheckBoxOption>()
                 {
                     new CheckBoxOption()
@@ -188,6 +188,27 @@ namespace WeldingJobTrackerWebApp.Controllers
             };
 
             _teamRepository.Update(updatedteam);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var currentUserRole = await _userRepository.GetCurrentUserRoleAsync();
+            if (currentUserRole != UserRoles.Admin)
+            {
+                ModelState.AddModelError("", "Action not Allowed");
+                return RedirectToAction("Edit", id);
+            }
+
+            var team = await _teamRepository.GetByIdAsync(id);
+            if (team == null) 
+            {
+                return NotFound();
+            }
+
+            _teamRepository.Delete(team);
 
             return RedirectToAction("Index");
         }
