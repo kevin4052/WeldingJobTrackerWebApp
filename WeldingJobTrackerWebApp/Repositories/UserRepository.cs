@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WeldingJobTrackerWebApp.Data;
@@ -13,7 +14,10 @@ namespace WeldingJobTrackerWebApp.Repositories
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
 
-        public UserRepository(ApplicationDbContext applicationDbContext, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public UserRepository(
+            ApplicationDbContext applicationDbContext, 
+            IHttpContextAccessor httpContextAccessor, 
+            UserManager<User> userManager)
         {
             _context = applicationDbContext;
             _httpContextAccessor = httpContextAccessor;
@@ -35,6 +39,25 @@ namespace WeldingJobTrackerWebApp.Repositories
         {
             var currentUserId = this.GetCurrentUserId();
             return await _userManager.FindByIdAsync(currentUserId);
+        }
+
+        public async Task<string> GetCurrentUserRoleAsync()
+        {
+            var currentUserId = this.GetCurrentUserId();
+            var currentUserRole = await (
+                from user in _context.Users
+                join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                join role in _context.Roles on userRole.RoleId equals role.Id
+                where user.Id == currentUserId
+                select new
+                {
+                    role.Name,
+                }
+                ).FirstOrDefaultAsync();
+
+            return currentUserRole.Name;
+            //var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            //return await _userManager.GetRolesAsync(currentUser);
         }
 
         public async Task<IEnumerable<UserRoleGroup>> GetSelectItems()

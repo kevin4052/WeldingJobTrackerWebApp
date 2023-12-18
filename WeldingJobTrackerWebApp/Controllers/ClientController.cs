@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
+using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
 using WeldingJobTrackerWebApp.Models.ViewModels.ViewClient;
@@ -9,11 +12,13 @@ namespace WeldingJobTrackerWebApp.Controllers
     {
         private readonly IClientRepository _clientRepository;
         private readonly IPhotoService _photoService;
+        private readonly IUserRepository _userRepository;
 
-        public ClientController(IClientRepository clientRepository, IPhotoService photoService) 
+        public ClientController(IClientRepository clientRepository, IPhotoService photoService, IUserRepository userRepository) 
         {
             _clientRepository = clientRepository;
             _photoService = photoService;
+            _userRepository = userRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -127,9 +132,9 @@ namespace WeldingJobTrackerWebApp.Controllers
                 return View(clientViewModel);
             }
 
-            if (!string.IsNullOrEmpty(client.Image.publicId) && imageUploadresult != null)
+            if (!string.IsNullOrEmpty(client.Image?.publicId) && imageUploadresult != null)
             {
-                await _photoService.DeletPhotoAsync(client.Image.publicId);
+                await _photoService.DeletePhotoAsync(client.Image.publicId);
             }
 
             var clientUpdate = new Client
@@ -147,16 +152,42 @@ namespace WeldingJobTrackerWebApp.Controllers
                     State = clientViewModel.Address.State,
                     PostalCode = clientViewModel.Address.PostalCode,
                 },
-                ImageId = client.Image.Id,
+                ImageId = client.Image?.Id ?? 0,
                 Image = new Image
                 {
-                    Id = client.Image.Id,
+                    Id = client.Image?.Id ?? 0,
                     publicId = imageUploadresult?.PublicId ?? client.Image.publicId,
                     Url = imageUploadresult?.Url.ToString() ?? client.Image.Url
                 },
             };            
 
             _clientRepository.Update(clientUpdate);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var currentUserRole = await _userRepository.GetCurrentUserRoleAsync();
+            if (currentUserRole != UserRoles.Admin)
+            {
+                ModelState.AddModelError("", "Action not Allowed");
+                return RedirectToAction("Edit", id);
+            }
+
+            var client = await _clientRepository.GetByIdAsync(id);
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(client.Image.publicId))
+            {
+                _ = _photoService.DeletePhotoAsync(client.Image.publicId);
+            }
+
+            _clientRepository.Delete(client);
 
             return RedirectToAction("Index");
         }

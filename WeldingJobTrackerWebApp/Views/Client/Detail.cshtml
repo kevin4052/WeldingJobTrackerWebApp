@@ -6,31 +6,90 @@
 *@
 @{
 }
-
-<div class="card">
-    <img class="card-img-top" src="@Model.ImageUrl" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">@Model.Name</h5>
-        <p class="card-text">...</p>
+<div class="row">
+    <div class="col form-group">
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Delete" class="btn btn-danger float-right mt-3" />
+        </form>
     </div>
 </div>
-
 <div class="row">
     <div class="col-xl-4">
         <!-- Profile picture card-->
         <div class="card mb-4 mb-xl-0">
             <div class="card-header">Profile Picture</div>
             <div class="card-body text-center">
-                <!-- Profile picture image-->
-                <img class="img-account-profile rounded-circle mb-2" src="@Model.ImageUrl" alt="">
+                <div class="row justify-content-center">
+                    <img class="profile-image img-fluid rounded-circle mb-2" src="@Model.ImageUrl" alt="">
+                </div>
+                <div class="row justify-content-center">
+                    <p>@Model.Name</p>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-xl-8">
-        <!-- details card-->
-        <div class="card mb-4">
-            <div class="card-header">Client Details</div>
-            <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <!-- details card-->
+                <div class="card mb-4">
+                    <div class="card-header">Client Details</div>
+                    <div class="card-body">
+                        <form>
+                            <div class="row gx-3 mb-3">
+                                <div class="col">
+                                    <label asp-for="Name" class="small mb-1">Name</label>
+                                    <input asp-for="Name" class="form-control" type="text" disabled>
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row gx-3 mb-3">
+                                <div class="col">
+                                    <label asp-for="Address.Street1" class="small mb-1">Street</label>
+                                    <input asp-for="Address.Street1" class="form-control" type="text" disabled>
+                                    <span asp-validation-for="Address.Street1" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row gx-3 mb-3">
+                                <div class="col">
+                                    <label asp-for="Address.Street2" class="small mb-1">Suite/Apt</label>
+                                    <input asp-for="Address.Street2" class="form-control" type="text" disabled>
+                                    <span asp-validation-for="Address.Street2" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row gx-3 mb-3">
+                                <div class="col-md-4">
+                                    <label asp-for="Address.State" class="small mb-1">State</label>
+                                    <input asp-for="Address.State" class="form-control" type="text" disabled>
+                                    <span asp-validation-for="Address.State" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="Address.PostalCode" class="small mb-1">Zip</label>
+                                    <input asp-for="Address.PostalCode" class="form-control" type="text" disabled>
+                                    <span asp-validation-for="Address.PostalCode" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="Address.Country" class="small mb-1">Country</label>
+                                    <input asp-for="Address.Country" class="form-control" type="text" disabled>
+                                    <span asp-validation-for="Address.Country" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <!-- Save changes button-->
+                            @* <button class="btn btn-primary" type="button">Save changes</button> *@
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card mb-4">
+                    <div class="card-header">Projects</div>
+                    <div class="card-body">
+                        <p>Number of Projects: @Model.Projects?.Count()</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

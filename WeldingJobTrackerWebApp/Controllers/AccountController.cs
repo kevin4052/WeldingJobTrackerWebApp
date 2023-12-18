@@ -280,7 +280,7 @@ namespace WeldingJobTrackerWebApp.Controllers
 
             if (!string.IsNullOrEmpty(user?.Image?.publicId) && imageUploadresult != null)
             {
-                await _photoService.DeletPhotoAsync(user.Image.publicId);
+                await _photoService.DeletePhotoAsync(user.Image.publicId);
             }
             
             if (imageUploadresult != null)
