@@ -19,11 +19,13 @@ namespace WeldingJobTrackerWebApp.Controllers
         {
             var projects = await _dashboardRepository.GetAllUserProjects();
             var currentUser = await _userRepository.GetCurrentUserAsync();
+            var users = await _userRepository.GetAllAsync();
 
             var dashBoardViewModel = new DashboardViewModel
             {
                 Projects = projects,
-                CurrentUser = currentUser
+                CurrentUser = currentUser,
+                Users = users.ToList(),
             };
 
             return View(dashBoardViewModel);

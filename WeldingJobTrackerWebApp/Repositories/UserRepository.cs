@@ -114,7 +114,16 @@ namespace WeldingJobTrackerWebApp.Repositories
                 .Include(u => u.Company)
                 .Include(u => u.Address)
                 .Include(u => u.Image)
-                .FirstOrDefaultAsync(u => u.Id == id);
+                .SingleAsync(u => u.Id == id);
+        }
+
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _userManager.Users
+                .Include(u => u.Company)
+                .Include(u => u.Address)
+                .Include(u => u.Image)
+                .ToListAsync();
         }
 
         public async Task<IdentityResult> Update(User user)

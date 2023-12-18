@@ -18,11 +18,13 @@
                     <input type="hidden" value="@Model.Id" name="Id" />
 
                     <div class="row gx-3 mb-3">
-                        <!-- Profile picture image-->
-                        <img class="profile-image img-fluid rounded-circle mb-2" src="@Model.ImageUrl" alt="">
+                        <div class="col justify-content-center">
+                            <!-- Profile picture image-->
+                            <img class="profile-image img-fluid rounded-circle mb-2" src="@Model.ImageUrl" alt="">
 
-                        <input asp-for="Image" type="file" class="form-control" aria-describedby="Image" placeholder="Image">
-                        <span asp-validation-for="Image" class="text-danger"></span>
+                            <input asp-for="Image" type="file" class="form-control" aria-describedby="Image" placeholder="Image">
+                            <span asp-validation-for="Image" class="text-danger"></span>
+                        </div>
                     </div>
 
                     <div class="row gx-3 mb-3">

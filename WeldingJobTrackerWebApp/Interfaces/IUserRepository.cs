@@ -10,6 +10,7 @@ namespace WeldingJobTrackerWebApp.Interfaces
         Task<User> GetCurrentUserAsync();
         Task<string> GetCurrentUserRoleAsync();
         Task<User> GetUserbyIdAsync(string id);
+        Task<IEnumerable<User>> GetAllAsync();
         Task<IdentityResult> Update(User user);
         Task<IEnumerable<UserRoleGroup>> GetSelectItems();
     }

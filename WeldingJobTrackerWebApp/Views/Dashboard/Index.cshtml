@@ -7,33 +7,54 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h1 class="display-4 fw-normal">User Dashboard</h1>
-<a type="button" class="btn btn-primary" asp-controller="Account" asp-route-id="@Model.CurrentUser.Id" asp-action="Details">Edit User Profile</a>
-<a type="button" class="btn btn-primary" asp-controller="Account" asp-action="AddNewUser">Add new account</a>
-<a type="button" class="btn btn-primary" asp-controller="Project" asp-action="Index">Projects</a>
-<a type="button" class="btn btn-primary" asp-controller="Team" asp-action="Index">Teams</a>
-<a type="button" class="btn btn-primary" asp-controller="Client" asp-action="Index">Clients</a>
-
-<div class="album py-5 bg-light">
-    <div class="container">
-        <h4 class="display-4 fw-normal">Your Projects</h4>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            @foreach (var project in Model?.Projects)
-            {
-                <div class="col-md-4">
-                    <div class="card mb-4 box-shadow">
-                        <div class="card-body">
-                            <p class="card-text">@project.Name</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a type="btn btn-success" asp-controller="Project" asp-action="Detail" asp-route-id="@project.Id"
-                                       class="btn btn-sm btn-outline-secondary">View</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
+<div class="row mb-2">
+    <div class="col">
+        <h1 class="display-4 fw-normal">Dashboard</h1>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col">
+        <a type="button" class="btn btn-primary" asp-controller="Account" asp-route-id="@Model.CurrentUser.Id" asp-action="Details">Edit User Profile</a>
+        <a type="button" class="btn btn-primary" asp-controller="Account" asp-action="AddNewUser">Add new account</a>
+        <a type="button" class="btn btn-primary" asp-controller="Project" asp-action="Index">Projects</a>
+        <a type="button" class="btn btn-primary" asp-controller="Team" asp-action="Index">Teams</a>
+        <a type="button" class="btn btn-primary" asp-controller="Client" asp-action="Index">Clients</a>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">Personnel</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">User</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Location</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Users)
+                        {
+                            <tr>
+                                <td>@item.LastName, @item.FirstName</td>
+                                <td>@item.Email</td>
+                                <td>@item?.Address?.City, @item?.Address?.State</td>
+                                <td>
+                                    <a asp-controller="Account" asp-action="Details" asp-route-id="@item?.Id" type="button" class="btn btn-primary">View</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
+
+
+
+
