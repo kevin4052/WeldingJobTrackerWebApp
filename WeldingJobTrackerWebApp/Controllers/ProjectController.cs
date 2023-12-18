@@ -30,12 +30,6 @@ namespace WeldingJobTrackerWebApp.Controllers
             return View(projects);
         }
 
-        public async Task<IActionResult> Detail(int id)
-        {
-            var project = await _projectRepository.GetByIdAsync(id);
-            return View(project);
-        }
-
         public async Task<IActionResult> Create() 
         {
             var projectStatusSelectList = await _projectStatusRepository.GetSelectItems();
@@ -103,7 +97,7 @@ namespace WeldingJobTrackerWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id , EditProjectViewModel projectViewModel)
+        public async Task<IActionResult> Edit(int id, EditProjectViewModel projectViewModel)
         {
             if (!ModelState.IsValid)
             {
