@@ -84,22 +84,6 @@ namespace WeldingJobTrackerWebApp.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Detail(int id)
-        {
-            var team = await _teamRepository.GetByIdAsync(id);
-
-            var teamViewModel = new DetailTeamViewModel
-            {
-                Id = id,
-                Name = team.Name,
-                Admin = team.TeamMembers.First(tm => tm.Role.Code == TeamRoleCode.ProjectManager).User,
-                Welder = team.TeamMembers.First(tm => tm.Role.Code == TeamRoleCode.Labor).User
-            };
-
-            return View(teamViewModel);
-        }
-
         public async Task<IActionResult> Edit(int id)
         {
             if (id == 0)

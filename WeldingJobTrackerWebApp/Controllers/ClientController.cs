@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Tokens;
 using WeldingJobTrackerWebApp.Data;
 using WeldingJobTrackerWebApp.Interfaces;
 using WeldingJobTrackerWebApp.Models;
@@ -24,21 +22,6 @@ namespace WeldingJobTrackerWebApp.Controllers
         {
             var clients = await _clientRepository.GetAll();
             return View(clients);
-        }
-
-        public async Task<IActionResult> Detail(int id) 
-        {
-            var client = await _clientRepository.GetByIdAsync(id);
-            var clientViewModel = new DetailClientViewModel
-            {
-                Id = id,
-                Name = client.Name,
-                ImageUrl = client?.Image?.Url,
-                AddressId = client?.Address?.Id,
-                Address = client?.Address
-            };
-
-            return View(clientViewModel);
         }
 
         public IActionResult Create()

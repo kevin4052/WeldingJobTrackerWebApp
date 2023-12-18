@@ -24,7 +24,6 @@
             <th scope="col">State</th>
             <th scope="col">Zip</th>
             <th scope="col"></th>
-            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -39,10 +38,7 @@
                 <td>@item?.Address?.State</td>
                 <td>@item?.Address?.PostalCode</td>
                 <td>
-                    <a asp-controller="Client" asp-action="Detail" asp-route-id="@item?.Id" type="button" class="btn btn-primary">View</a>
-                </td>
-                <td>
-                    <a asp-controller="Client" asp-action="Edit" asp-route-id="@item?.Id" type="button" class="btn btn-primary">Edit</a>
+                    <a asp-controller="Client" asp-action="Edit" asp-route-id="@item?.Id" type="button" class="btn btn-primary">View</a>
                 </td>
             </tr>
         }
