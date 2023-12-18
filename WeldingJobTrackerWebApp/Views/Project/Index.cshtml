@@ -17,7 +17,9 @@
         <tr>
             <th scope="col">Project ID</th>
             <th scope="col">Name</th>
-            @* <th scope="col">Client</th> *@
+            <th scope="col">Team</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
             <th scope="col"></th>
         </tr>
     </thead>
@@ -27,9 +29,13 @@
             <tr>
                 <th scope="row">@item.Id</th>
                 <td>@item.Name</td>
-                @* <td>@item.Client.Name</td> *@
+                <td>@item.Team.Name</td>
+                <td>@item.ProjectStatus.Name</td>
                 <td>
                     <a asp-controller="Project" asp-action="Detail" asp-route-id="@item?.Id" type="button" class="btn btn-primary">View</a>
+                </td>
+                <td>
+                    <a asp-controller="Project" asp-action="Edit" asp-route-id="@item?.Id" type="button" class="btn btn-primary">Edit</a>
                 </td>
             </tr>            
         }

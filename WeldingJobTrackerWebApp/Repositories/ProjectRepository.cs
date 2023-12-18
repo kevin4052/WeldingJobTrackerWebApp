@@ -23,6 +23,8 @@ namespace WeldingJobTrackerWebApp.Repositories
 
             return await _context.Projects
                 .Include(p => p.ProjectStatus)
+                .Include(p => p.Team)
+                .Include(p => p.Company)
                 .Where(p => p.CompanyId == user.CompanyId)
                 .ToListAsync();
         }
@@ -33,6 +35,8 @@ namespace WeldingJobTrackerWebApp.Repositories
 
             var project = await _context.Projects
                 .Include(p => p.ProjectStatus)
+                .Include(p => p.Team)
+                .Include(p => p.Company)
                 .Where(p => p.CompanyId == user.CompanyId)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -64,6 +68,12 @@ namespace WeldingJobTrackerWebApp.Repositories
             return Save();
         }
 
+        public bool Update(Project project)
+        {
+            _context.Update(project);
+            return Save();
+        }
+
         public bool Delete(Project project)
         {
             _context.Remove(project);
@@ -74,12 +84,6 @@ namespace WeldingJobTrackerWebApp.Repositories
         {
             var save = _context.SaveChanges();
             return save > 0;
-        }
-
-        public bool Update(Project project)
-        {
-            _context.Update(project);
-            return Save();
         }
     }
 }

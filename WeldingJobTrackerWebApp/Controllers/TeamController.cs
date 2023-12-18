@@ -42,8 +42,8 @@ namespace WeldingJobTrackerWebApp.Controllers
             {
                 CompanyId = currentUser.CompanyId,
                 ProjectSelectList = projectSelectList.ToList(),
-                AdminSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "admin").Users,
-                WelderSelectList = userSelectGroups.FirstOrDefault(g => g.Role == "welder").Users,
+                AdminSelectList = userSelectGroups.First(g => g.Role == "admin").Users,
+                WelderSelectList = userSelectGroups.First(g => g.Role == "welder").Users,
             };
 
             return View(teamViewModel);
@@ -69,12 +69,12 @@ namespace WeldingJobTrackerWebApp.Controllers
                     new TeamMember
                     {
                         UserId = teamViewModel.SelectedWelderId,
-                        RoleId = teamRoles.FirstOrDefault(r => r.Code == TeamRoleCode.Labor).Id
+                        RoleId = teamRoles.First(r => r.Code == TeamRoleCode.Labor).Id
                     },
                     new TeamMember
                     {
                         UserId = teamViewModel.SelectedAdminId,
-                        RoleId = teamRoles.FirstOrDefault(r => r.Code == TeamRoleCode.ProjectManager).Id
+                        RoleId = teamRoles.First(r => r.Code == TeamRoleCode.ProjectManager).Id
                     }
                 },
             };
@@ -93,8 +93,8 @@ namespace WeldingJobTrackerWebApp.Controllers
             {
                 Id = id,
                 Name = team.Name,
-                Admin = team.TeamMembers.FirstOrDefault(tm => tm.Role.Code == TeamRoleCode.ProjectManager).User,
-                Welder = team.TeamMembers.FirstOrDefault(tm => tm.Role.Code == TeamRoleCode.Labor).User
+                Admin = team.TeamMembers.First(tm => tm.Role.Code == TeamRoleCode.ProjectManager).User,
+                Welder = team.TeamMembers.First(tm => tm.Role.Code == TeamRoleCode.Labor).User
             };
 
             return View(teamViewModel);
@@ -177,12 +177,12 @@ namespace WeldingJobTrackerWebApp.Controllers
                     new TeamMember
                     {
                         UserId = teamViewModel.SelectedWelderId,
-                        RoleId = teamRoles.FirstOrDefault(r => r.Code == TeamRoleCode.Labor).Id
+                        RoleId = teamRoles.First(r => r.Code == TeamRoleCode.Labor).Id
                     },
                     new TeamMember
                     {
                         UserId = teamViewModel.SelectedAdminId,
-                        RoleId = teamRoles.FirstOrDefault(r => r.Code == TeamRoleCode.ProjectManager).Id
+                        RoleId = teamRoles.First(r => r.Code == TeamRoleCode.ProjectManager).Id
                     }
                 },
             };
